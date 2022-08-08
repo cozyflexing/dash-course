@@ -39,6 +39,7 @@ def update_graph(selected_value):
         y=nasdaq[f"{selected_value}"],
         labels={"y": f"{selected_value}", "x": "Dates"},
     )
+    return line_fig
 
 
 if __name__ == "__main__":
