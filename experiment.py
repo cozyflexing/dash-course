@@ -12,7 +12,8 @@ app = dash.Dash()
 
 app.layout = html.Div(
     [
-        html.H1("NASDAQ Dashboard"),
+        html.H1("Sixteen Analytics Dashboard"),
+        dcc.RadioItems(id="API_Choice"),
         html.P(
             [
                 "This dashboard shows NASDAQ info:",
@@ -27,7 +28,7 @@ app.layout = html.Div(
         dcc.Dropdown(
             id="data_options", options=nasdaq.columns[1:], value="Open Interest"
         ),
-        dcc.RadioItems(id="lookback", options=look_back_options, value="1 Year"),
+        dcc.Dropdown(id="lookback", options=look_back_options, value="1 Year"),
         dcc.Graph(id="data_graph"),
     ]
 )
@@ -75,7 +76,6 @@ def update_graph(selected_date, selected_lookback):
             labels={"y": f"{selected_date}", "x": "Dates"},
         )
     return line_fig
-
 
 if __name__ == "__main__":
     app.run_server(debug=True)
