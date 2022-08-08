@@ -6,6 +6,7 @@ import plotly.express as px
 
 nasdaq = pd.read_csv("CFTC-209742_FO_L_ALL.csv")
 
+look_back_options = ["6 Months", "1 Year", "3 Years", "5 Years", "Max"]
 
 app = dash.Dash()
 
@@ -24,23 +25,55 @@ app.layout = html.Div(
             ]
         ),
         dcc.Dropdown(
-            id="my_dropdown", options=nasdaq.columns[1:], value="Open Interest"
+            id="data_options", options=nasdaq.columns[1:], value="Open Interest"
         ),
-        dcc.Graph(id="my_graph"),
+        dcc.RadioItems(id="lookback", options=look_back_options, value="1 Year"),
+        dcc.Graph(id="data_graph"),
     ]
 )
 
 
 @app.callback(
-    Output(component_id="my_graph", component_property="figure"),
-    Input(component_id="my_dropdown", component_property="value"),
+    Output(component_id="data_graph", component_property="figure"),
+    Input(component_id="data_options", component_property="value"),
+    Input(component_id="lookback", component_property="value"),
 )
-def update_graph(selected_value):
-    line_fig = px.line(
-        x=nasdaq["Date"],
-        y=nasdaq[f"{selected_value}"],
-        labels={"y": f"{selected_value}", "x": "Dates"},
-    )
+def update_graph(selected_date, selected_lookback):
+    if selected_lookback == "6 Months":
+        nasdaq = pd.read_csv("CFTC-209742_FO_L_ALL.csv", nrows=26)
+        line_fig = px.line(
+            x=nasdaq["Date"],
+            y=nasdaq[f"{selected_date}"],
+            labels={"y": f"{selected_date}", "x": "Dates"},
+        )
+    elif selected_lookback == "1 Year":
+        nasdaq = pd.read_csv("CFTC-209742_FO_L_ALL.csv", nrows=52)
+        line_fig = px.line(
+            x=nasdaq["Date"],
+            y=nasdaq[f"{selected_date}"],
+            labels={"y": f"{selected_date}", "x": "Dates"},
+        )
+    elif selected_lookback == "3 Years":
+        nasdaq = pd.read_csv("CFTC-209742_FO_L_ALL.csv", nrows=156)
+        line_fig = px.line(
+            x=nasdaq["Date"],
+            y=nasdaq[f"{selected_date}"],
+            labels={"y": f"{selected_date}", "x": "Dates"},
+        )
+    elif selected_lookback == "5 Years":
+        nasdaq = pd.read_csv("CFTC-209742_FO_L_ALL.csv", nrows=260)
+        line_fig = px.line(
+            x=nasdaq["Date"],
+            y=nasdaq[f"{selected_date}"],
+            labels={"y": f"{selected_date}", "x": "Dates"},
+        )
+    elif selected_lookback == "Max":
+        nasdaq = pd.read_csv("CFTC-209742_FO_L_ALL.csv")
+        line_fig = px.line(
+            x=nasdaq["Date"],
+            y=nasdaq[f"{selected_date}"],
+            labels={"y": f"{selected_date}", "x": "Dates"},
+        )
     return line_fig
 
 
