@@ -8,7 +8,7 @@ nasdaq = pd.read_csv("CFTC-209742_FO_L_ALL.csv")
 
 
 app = dash.Dash()
-value = "Open Interest"
+
 app.layout = html.Div(
     [
         html.H1("NASDAQ Dashboard"),
@@ -23,7 +23,9 @@ app.layout = html.Div(
                 ),
             ]
         ),
-        dcc.Dropdown(id="my_dropdown", options=nasdaq.columns, value="Open Interest"),
+        dcc.Dropdown(
+            id="my_dropdown", options=nasdaq.columns[1:], value="Open Interest"
+        ),
         dcc.Graph(id="my_graph"),
     ]
 )
