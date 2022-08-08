@@ -32,12 +32,12 @@ app.layout = html.Div(
     ]
 )
 
-
 @app.callback(
     Output(component_id="data_graph", component_property="figure"),
     Input(component_id="data_options", component_property="value"),
     Input(component_id="lookback", component_property="value"),
 )
+
 def update_graph(selected_date, selected_lookback):
     if selected_lookback == "6 Months":
         nasdaq = pd.read_csv("CFTC-209742_FO_L_ALL.csv", nrows=26)
