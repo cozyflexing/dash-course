@@ -276,6 +276,9 @@ def calculated_grap_update(selected_asset, selected_calculation, selected_lookba
             "x": "Dates",
         },
     )
+    if selected_calculation == "COT Index Commercial" or "COT Index Noncommercial":
+        line_fig.add_hrect(
+            y0=-1, y1=5, line_width=0, fillcolor="red", opacity=0.2).add_hrect(y0=90, y1=101, line_width=0, fillcolor="green", opacity=0.2)
 
     return line_fig
 
