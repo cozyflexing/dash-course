@@ -16,6 +16,7 @@ data_options = [
     "Total Short",
     "Nonreportable Positions Long",
     "Nonreportable Positions Short",
+    "Net Position",
 ]
 
 asset_options = [
