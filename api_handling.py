@@ -13,8 +13,11 @@ with open("CSV FILES/CFTC_NASDAQ.csv", "w+") as f:
 
 NASDAQ_data = pd.read_csv(f"CSV FILES/CFTC_NASDAQ.csv")
 
-NASDAQ_data["Net Position"] = (
+NASDAQ_data["Commercial Net Position"] = (
     NASDAQ_data["Commercial Long"] - NASDAQ_data["Commercial Short"]
+)
+NASDAQ_data["Noncommercial Net Position"] = (
+    NASDAQ_data["Noncommercial Long"] - NASDAQ_data["Noncommercial Short"]
 )
 
 NASDAQ_data_csv = NASDAQ_data.to_csv(
@@ -32,7 +35,8 @@ NASDAQ_data_csv = NASDAQ_data.to_csv(
         "Total Short",
         "Nonreportable Positions Long",
         "Nonreportable Positions Short",
-        "Net Position",
+        "Commercial Net Position",
+        "Noncommercial Net Position",
     ],
     header=True,
     index=True,
@@ -51,8 +55,11 @@ with open("CSV FILES/CFTC_SP500.csv", "w+") as f:
 
 SP500_data = pd.read_csv(f"CSV FILES/CFTC_SP500.csv")
 
-SP500_data["Net Position"] = (
+SP500_data["Commercial Net Position"] = (
     SP500_data["Commercial Long"] - SP500_data["Commercial Short"]
+)
+SP500_data["Noncommercial Net Position"] = (
+    SP500_data["Noncommercial Long"] - SP500_data["Noncommercial Short"]
 )
 
 SP500_data_csv = SP500_data.to_csv(
@@ -70,7 +77,8 @@ SP500_data_csv = SP500_data.to_csv(
         "Total Short",
         "Nonreportable Positions Long",
         "Nonreportable Positions Short",
-        "Net Position",
+        "Commercial Net Position",
+        "Noncommercial Net Position",
     ],
     header=True,
     index=True,
@@ -88,7 +96,12 @@ with open("CSV FILES/CFTC_GOLD.csv", "w+") as f:
 
 GOLD_data = pd.read_csv(f"CSV FILES/CFTC_GOLD.csv")
 
-GOLD_data["Net Position"] = GOLD_data["Commercial Long"] - GOLD_data["Commercial Short"]
+GOLD_data["Commercial Net Position"] = (
+    GOLD_data["Commercial Long"] - GOLD_data["Commercial Short"]
+)
+GOLD_data["Noncommercial Net Position"] = (
+    GOLD_data["Noncommercial Long"] - GOLD_data["Noncommercial Short"]
+)
 
 GOLD_data_csv = GOLD_data.to_csv(
     path_or_buf="CSV FILES/CFTC_GOLD.csv",
@@ -105,7 +118,8 @@ GOLD_data_csv = GOLD_data.to_csv(
         "Total Short",
         "Nonreportable Positions Long",
         "Nonreportable Positions Short",
-        "Net Position",
+        "Commercial Net Position",
+        "Noncommercial Net Position",
     ],
     header=True,
     index=True,
@@ -123,8 +137,11 @@ with open("CSV FILES/CFTC_SILVER.csv", "w+") as f:
 
 SILVER_data = pd.read_csv(f"CSV FILES/CFTC_SILVER.csv")
 
-SILVER_data["Net Position"] = (
+SILVER_data["Commercial Net Position"] = (
     SILVER_data["Commercial Long"] - SILVER_data["Commercial Short"]
+)
+SILVER_data["Noncommercial Net Position"] = (
+    SILVER_data["Noncommercial Long"] - SILVER_data["Noncommercial Short"]
 )
 
 SILVER_data_csv = SILVER_data.to_csv(
@@ -142,7 +159,8 @@ SILVER_data_csv = SILVER_data.to_csv(
         "Total Short",
         "Nonreportable Positions Long",
         "Nonreportable Positions Short",
-        "Net Position",
+        "Commercial Net Position",
+        "Noncommercial Net Position",
     ],
     header=True,
     index=True,
@@ -160,7 +178,12 @@ with open("CSV FILES/CFTC_EURO.csv", "w+") as f:
 
 EURO_data = pd.read_csv(f"CSV FILES/CFTC_EURO.csv")
 
-EURO_data["Net Position"] = EURO_data["Commercial Long"] - EURO_data["Commercial Short"]
+EURO_data["Commercial Net Position"] = (
+    EURO_data["Commercial Long"] - EURO_data["Commercial Short"]
+)
+EURO_data["Noncommercial Net Position"] = (
+    EURO_data["Noncommercial Long"] - EURO_data["Noncommercial Short"]
+)
 
 EURO_data_csv = EURO_data.to_csv(
     path_or_buf="CSV FILES/CFTC_EURO.csv",
@@ -177,7 +200,8 @@ EURO_data_csv = EURO_data.to_csv(
         "Total Short",
         "Nonreportable Positions Long",
         "Nonreportable Positions Short",
-        "Net Position",
+        "Commercial Net Position",
+        "Noncommercial Net Position",
     ],
     header=True,
     index=True,
@@ -195,7 +219,12 @@ with open("CSV FILES/CFTC_USD.csv", "w+") as f:
 
 USD_data = pd.read_csv(f"CSV FILES/CFTC_USD.csv")
 
-USD_data["Net Position"] = USD_data["Commercial Long"] - USD_data["Commercial Short"]
+USD_data["Commercial Net Position"] = (
+    USD_data["Commercial Long"] - USD_data["Commercial Short"]
+)
+USD_data["Noncommercial Net Position"] = (
+    USD_data["Noncommercial Long"] - USD_data["Noncommercial Short"]
+)
 
 USD_data_csv = USD_data.to_csv(
     path_or_buf="CSV FILES/CFTC_USD.csv",
@@ -212,7 +241,8 @@ USD_data_csv = USD_data.to_csv(
         "Total Short",
         "Nonreportable Positions Long",
         "Nonreportable Positions Short",
-        "Net Position",
+        "Commercial Net Position",
+        "Noncommercial Net Position",
     ],
     header=True,
     index=True,
@@ -230,7 +260,12 @@ with open("CSV FILES/CFTC_GBP.csv", "w+") as f:
 
 GBP_data = pd.read_csv(f"CSV FILES/CFTC_GBP.csv")
 
-GBP_data["Net Position"] = GBP_data["Commercial Long"] - GBP_data["Commercial Short"]
+GBP_data["Commercial Net Position"] = (
+    GBP_data["Commercial Long"] - GBP_data["Commercial Short"]
+)
+GBP_data["Noncommercial Net Position"] = (
+    GBP_data["Noncommercial Long"] - GBP_data["Noncommercial Short"]
+)
 
 GBP_data_csv = GBP_data.to_csv(
     path_or_buf="CSV FILES/CFTC_GBP.csv",
@@ -247,7 +282,8 @@ GBP_data_csv = GBP_data.to_csv(
         "Total Short",
         "Nonreportable Positions Long",
         "Nonreportable Positions Short",
-        "Net Position",
+        "Commercial Net Position",
+        "Noncommercial Net Position",
     ],
     header=True,
     index=True,
@@ -265,7 +301,12 @@ with open("CSV FILES/CFTC_CAD.csv", "w+") as f:
 
 CAD_data = pd.read_csv(f"CSV FILES/CFTC_CAD.csv")
 
-CAD_data["Net Position"] = CAD_data["Commercial Long"] - CAD_data["Commercial Short"]
+CAD_data["Commercial Net Position"] = (
+    CAD_data["Commercial Long"] - CAD_data["Commercial Short"]
+)
+CAD_data["Noncommercial Net Position"] = (
+    CAD_data["Noncommercial Long"] - CAD_data["Noncommercial Short"]
+)
 
 CAD_data_csv = CAD_data.to_csv(
     path_or_buf="CSV FILES/CFTC_CAD.csv",
@@ -282,7 +323,8 @@ CAD_data_csv = CAD_data.to_csv(
         "Total Short",
         "Nonreportable Positions Long",
         "Nonreportable Positions Short",
-        "Net Position",
+        "Commercial Net Position",
+        "Noncommercial Net Position",
     ],
     header=True,
     index=True,
@@ -300,7 +342,12 @@ with open("CSV FILES/CFTC_JPY.csv", "w+") as f:
 
 JPY_data = pd.read_csv(f"CSV FILES/CFTC_JPY.csv")
 
-JPY_data["Net Position"] = JPY_data["Commercial Long"] - JPY_data["Commercial Short"]
+JPY_data["Commercial Net Position"] = (
+    JPY_data["Commercial Long"] - JPY_data["Commercial Short"]
+)
+JPY_data["Noncommercial Net Position"] = (
+    JPY_data["Noncommercial Long"] - JPY_data["Noncommercial Short"]
+)
 
 JPY_data_csv = JPY_data.to_csv(
     path_or_buf="CSV FILES/CFTC_JPY.csv",
@@ -317,7 +364,8 @@ JPY_data_csv = JPY_data.to_csv(
         "Total Short",
         "Nonreportable Positions Long",
         "Nonreportable Positions Short",
-        "Net Position",
+        "Commercial Net Position",
+        "Noncommercial Net Position",
     ],
     header=True,
     index=True,
@@ -335,7 +383,12 @@ with open("CSV FILES/CFTC_AUD.csv", "w+") as f:
 
 AUD_data = pd.read_csv(f"CSV FILES/CFTC_AUD.csv")
 
-AUD_data["Net Position"] = AUD_data["Commercial Long"] - AUD_data["Commercial Short"]
+AUD_data["Commercial Net Position"] = (
+    AUD_data["Commercial Long"] - AUD_data["Commercial Short"]
+)
+AUD_data["Noncommercial Net Position"] = (
+    AUD_data["Noncommercial Long"] - AUD_data["Noncommercial Short"]
+)
 
 AUD_data_csv = AUD_data.to_csv(
     path_or_buf="CSV FILES/CFTC_AUD.csv",
@@ -352,7 +405,8 @@ AUD_data_csv = AUD_data.to_csv(
         "Total Short",
         "Nonreportable Positions Long",
         "Nonreportable Positions Short",
-        "Net Position",
+        "Commercial Net Position",
+        "Noncommercial Net Position",
     ],
     header=True,
     index=True,
@@ -370,7 +424,12 @@ with open("CSV FILES/CFTC_NZD.csv", "w+") as f:
 
 NZD_data = pd.read_csv(f"CSV FILES/CFTC_NZD.csv")
 
-NZD_data["Net Position"] = NZD_data["Commercial Long"] - NZD_data["Commercial Short"]
+NZD_data["Commercial Net Position"] = (
+    NZD_data["Commercial Long"] - NZD_data["Commercial Short"]
+)
+NZD_data["Noncommercial Net Position"] = (
+    NZD_data["Noncommercial Long"] - NZD_data["Noncommercial Short"]
+)
 
 NZD_data_csv = NZD_data.to_csv(
     path_or_buf="CSV FILES/CFTC_NZD.csv",
@@ -387,7 +446,8 @@ NZD_data_csv = NZD_data.to_csv(
         "Total Short",
         "Nonreportable Positions Long",
         "Nonreportable Positions Short",
-        "Net Position",
+        "Commercial Net Position",
+        "Noncommercial Net Position",
     ],
     header=True,
     index=True,
@@ -405,7 +465,12 @@ with open("CSV FILES/CFTC_CHF.csv", "w+") as f:
 
 CHF_data = pd.read_csv(f"CSV FILES/CFTC_CHF.csv")
 
-CHF_data["Net Position"] = CHF_data["Commercial Long"] - CHF_data["Commercial Short"]
+CHF_data["Commercial Net Position"] = (
+    CHF_data["Commercial Long"] - CHF_data["Commercial Short"]
+)
+CHF_data["Noncommercial Net Position"] = (
+    CHF_data["Noncommercial Long"] - CHF_data["Noncommercial Short"]
+)
 
 CHF_data_csv = CHF_data.to_csv(
     path_or_buf="CSV FILES/CFTC_CHF.csv",
@@ -422,7 +487,8 @@ CHF_data_csv = CHF_data.to_csv(
         "Total Short",
         "Nonreportable Positions Long",
         "Nonreportable Positions Short",
-        "Net Position",
+        "Commercial Net Position",
+        "Noncommercial Net Position",
     ],
     header=True,
     index=True,
@@ -440,7 +506,12 @@ with open("CSV FILES/CFTC_WTI.csv", "w+") as f:
 
 WTI_data = pd.read_csv(f"CSV FILES/CFTC_WTI.csv")
 
-WTI_data["Net Position"] = WTI_data["Commercial Long"] - WTI_data["Commercial Short"]
+WTI_data["Commercial Net Position"] = (
+    WTI_data["Commercial Long"] - WTI_data["Commercial Short"]
+)
+WTI_data["Noncommercial Net Position"] = (
+    WTI_data["Noncommercial Long"] - WTI_data["Noncommercial Short"]
+)
 
 WTI_data_csv = WTI_data.to_csv(
     path_or_buf="CSV FILES/CFTC_WTI.csv",
@@ -457,7 +528,8 @@ WTI_data_csv = WTI_data.to_csv(
         "Total Short",
         "Nonreportable Positions Long",
         "Nonreportable Positions Short",
-        "Net Position",
+        "Commercial Net Position",
+        "Noncommercial Net Position",
     ],
     header=True,
     index=True,

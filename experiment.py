@@ -43,7 +43,7 @@ look_back_options = [
     "Max",
 ]
 
-calc_options = ["COT Index", "COT Movement Index"]
+calc_options = ["COT Index Commercial", "COT Movement Index"]
 
 app = dash.Dash()
 
@@ -73,7 +73,9 @@ app.layout = html.Div(
                     id="asset_options_calc", options=asset_options, value="NASDAQ"
                 ),
                 dcc.Dropdown(
-                    id="calc_options", options=calc_options, value="COT Index"
+                    id="calc_options",
+                    options=calc_options,
+                    value="COT Index Commercial",
                 ),
                 dcc.Dropdown(
                     id="lookback_calc", options=look_back_options, value="1 Year"
@@ -147,7 +149,7 @@ def standard_graph_update(selected_asset, selected_data, selected_lookback):
 )
 def calculated_grap_update(selected_asset, selected_calculation, selected_lookback):
     cot_index = []
-    if selected_calculation == "COT Index":
+    if selected_calculation == "COT Index Commercial":
         if selected_lookback == "6 Months":
             extracted_data = pd.read_csv(
                 f"CSV FILES/CFTC_{selected_asset}.csv", nrows=26
