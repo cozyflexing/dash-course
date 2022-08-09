@@ -3,8 +3,6 @@ from dash import dcc, html
 from dash.dependencies import Input, Output
 import pandas as pd
 import plotly.express as px
-import requests
-import api_handling
 
 data_options = [
     "Open Interest",
@@ -19,7 +17,21 @@ data_options = [
     "Nonreportable Positions Short",
 ]
 
-asset_options = ["NASDAQ", "SP500", "GOLD"]
+asset_options = [
+    "EURO",
+    "USD",
+    "GBP",
+    "CAD",
+    "JPY",
+    "AUD",
+    "NZD",
+    "CHF",
+    "SILVER",
+    "GOLD",
+    "WTI",
+    "NASDAQ",
+    "SP500",
+]
 
 look_back_options = ["6 Months", "1 Year", "3 Years", "5 Years", "Max"]
 
