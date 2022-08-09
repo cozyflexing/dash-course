@@ -1,0 +1,12 @@
+csv
+
+EURO = 
+USD = 
+GBP = 
+CAD = 
+JPY = 
+AUD = 
+GOLD = https://data.nasdaq.com/api/v3/datasets/CFTC/088691_FO_L_ALL.csv?api_key=dKxFC2Wn7ckKFyatyDC3 - done
+WTI =  
+S&P 500= https://data.nasdaq.com/api/v3/datasets/CFTC/13874A_FO_L_ALL.csv?api_key=dKxFC2Wn7ckKFyatyDC3 - done
+NASDAQ = https://data.nasdaq.com/api/v3/datasets/CFTC/209742_FO_L_ALL.csv?api_key=dKxFC2Wn7ckKFyatyDC3 - done

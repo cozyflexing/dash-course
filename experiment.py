@@ -56,7 +56,7 @@ app.layout = html.Div(
 )
 def update_graph(selected_asset, selected_data, selected_lookback):
     if selected_lookback == "6 Months":
-        extracted_data = pd.read_csv(f"CFTC_{selected_asset}.csv", nrows=26)
+        extracted_data = pd.read_csv(f"CSV FILES/CFTC_{selected_asset}.csv", nrows=26)
         line_fig = px.line(
             x=extracted_data["Date"],
             y=extracted_data[f"{selected_data}"],
@@ -64,7 +64,7 @@ def update_graph(selected_asset, selected_data, selected_lookback):
         )
         selected_average = extracted_data[f"{selected_data}"].mean()
     elif selected_lookback == "1 Year":
-        extracted_data = pd.read_csv(f"CFTC_{selected_asset}.csv", nrows=52)
+        extracted_data = pd.read_csv(f"CSV FILES/CFTC_{selected_asset}.csv", nrows=52)
         line_fig = px.line(
             x=extracted_data["Date"],
             y=extracted_data[f"{selected_data}"],
@@ -72,7 +72,7 @@ def update_graph(selected_asset, selected_data, selected_lookback):
         )
         selected_average = extracted_data[f"{selected_data}"].mean()
     elif selected_lookback == "3 Years":
-        extracted_data = pd.read_csv(f"CFTC_{selected_asset}.csv", nrows=156)
+        extracted_data = pd.read_csv(f"CSV FILES/CFTC_{selected_asset}.csv", nrows=156)
         line_fig = px.line(
             x=extracted_data["Date"],
             y=extracted_data[f"{selected_data}"],
@@ -80,7 +80,7 @@ def update_graph(selected_asset, selected_data, selected_lookback):
         )
         selected_average = extracted_data[f"{selected_data}"].mean()
     elif selected_lookback == "5 Years":
-        extracted_data = pd.read_csv(f"CFTC_{selected_asset}.csv", nrows=260)
+        extracted_data = pd.read_csv(f"CSV FILES/CFTC_{selected_asset}.csv", nrows=260)
         line_fig = px.line(
             x=extracted_data["Date"],
             y=extracted_data[f"{selected_data}"],
@@ -88,7 +88,7 @@ def update_graph(selected_asset, selected_data, selected_lookback):
         )
         selected_average = extracted_data[f"{selected_data}"].mean()
     elif selected_lookback == "Max":
-        extracted_data = pd.read_csv(f"CFTC_{selected_asset}.csv")
+        extracted_data = pd.read_csv(f"CSV FILES/CFTC_{selected_asset}.csv")
         line_fig = px.line(
             x=extracted_data["Date"],
             y=extracted_data[f"{selected_data}"],
