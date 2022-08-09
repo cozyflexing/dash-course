@@ -43,7 +43,7 @@ look_back_options = [
     "Max",
 ]
 
-calc_options = ["COT Index Commercial", "COT Movement Index"]
+calc_options = ["COT Index Commercial", "COT Index Noncommercial", "COT Movement Index"]
 
 app = dash.Dash()
 
@@ -154,58 +154,117 @@ def calculated_grap_update(selected_asset, selected_calculation, selected_lookba
             extracted_data = pd.read_csv(
                 f"CSV FILES/CFTC_{selected_asset}.csv", nrows=26
             )
-            for x in extracted_data["Net Position"]:
+            for x in extracted_data["Commercial Net Position"]:
                 cot_index.append(
                     dcalc.cot_index_calculation(
                         x,
-                        extracted_data["Net Position"].min(),
-                        extracted_data["Net Position"].max(),
+                        extracted_data["Commercial Net Position"].min(),
+                        extracted_data["Commercial Net Position"].max(),
                     )
                 )
         elif selected_lookback == "1 Year":
             extracted_data = pd.read_csv(
                 f"CSV FILES/CFTC_{selected_asset}.csv", nrows=52
             )
-            for x in extracted_data["Net Position"]:
+            for x in extracted_data["Commercial Net Position"]:
                 cot_index.append(
                     dcalc.cot_index_calculation(
                         x,
-                        extracted_data["Net Position"].min(),
-                        extracted_data["Net Position"].max(),
+                        extracted_data["Commercial Net Position"].min(),
+                        extracted_data["Commercial Net Position"].max(),
                     )
                 )
         elif selected_lookback == "3 Year":
             extracted_data = pd.read_csv(
                 f"CSV FILES/CFTC_{selected_asset}.csv", nrows=156
             )
-            for x in extracted_data["Net Position"]:
+            for x in extracted_data["Commercial Net Position"]:
                 cot_index.append(
                     dcalc.cot_index_calculation(
                         x,
-                        extracted_data["Net Position"].min(),
-                        extracted_data["Net Position"].max(),
+                        extracted_data["Commercial Net Position"].min(),
+                        extracted_data["Commercial Net Position"].max(),
                     )
                 )
         elif selected_lookback == "5 Year":
             extracted_data = pd.read_csv(
                 f"CSV FILES/CFTC_{selected_asset}.csv", nrows=260
             )
-            for x in extracted_data["Net Position"]:
+            for x in extracted_data["Commercial Net Position"]:
                 cot_index.append(
                     dcalc.cot_index_calculation(
                         x,
-                        extracted_data["Net Position"].min(),
-                        extracted_data["Net Position"].max(),
+                        extracted_data["Commercial Net Position"].min(),
+                        extracted_data["Commercial Net Position"].max(),
                     )
                 )
         else:
             extracted_data = pd.read_csv(f"CSV FILES/CFTC_{selected_asset}.csv")
-            for x in extracted_data["Net Position"]:
+            for x in extracted_data["Commercial Net Position"]:
                 cot_index.append(
                     dcalc.cot_index_calculation(
                         x,
-                        extracted_data["Net Position"].min(),
-                        extracted_data["Net Position"].max(),
+                        extracted_data["Commercial Net Position"].min(),
+                        extracted_data["Commercial Net Position"].max(),
+                    )
+                )
+    if selected_calculation == "COT Index Noncommercial":
+        if selected_lookback == "6 Months":
+            extracted_data = pd.read_csv(
+                f"CSV FILES/CFTC_{selected_asset}.csv", nrows=26
+            )
+            for x in extracted_data["Noncommercial Net Position"]:
+                cot_index.append(
+                    dcalc.cot_index_calculation(
+                        x,
+                        extracted_data["Noncommercial Net Position"].min(),
+                        extracted_data["Noncommercial Net Position"].max(),
+                    )
+                )
+        elif selected_lookback == "1 Year":
+            extracted_data = pd.read_csv(
+                f"CSV FILES/CFTC_{selected_asset}.csv", nrows=52
+            )
+            for x in extracted_data["Noncommercial Net Position"]:
+                cot_index.append(
+                    dcalc.cot_index_calculation(
+                        x,
+                        extracted_data["Noncommercial Net Position"].min(),
+                        extracted_data["Noncommercial Net Position"].max(),
+                    )
+                )
+        elif selected_lookback == "3 Year":
+            extracted_data = pd.read_csv(
+                f"CSV FILES/CFTC_{selected_asset}.csv", nrows=156
+            )
+            for x in extracted_data["Noncommercial Net Position"]:
+                cot_index.append(
+                    dcalc.cot_index_calculation(
+                        x,
+                        extracted_data["Noncommercial Net Position"].min(),
+                        extracted_data["Noncommercial Net Position"].max(),
+                    )
+                )
+        elif selected_lookback == "5 Year":
+            extracted_data = pd.read_csv(
+                f"CSV FILES/CFTC_{selected_asset}.csv", nrows=260
+            )
+            for x in extracted_data["Noncommercial Net Position"]:
+                cot_index.append(
+                    dcalc.cot_index_calculation(
+                        x,
+                        extracted_data["Noncommercial Net Position"].min(),
+                        extracted_data["Noncommercial Net Position"].max(),
+                    )
+                )
+        else:
+            extracted_data = pd.read_csv(f"CSV FILES/CFTC_{selected_asset}.csv")
+            for x in extracted_data["Noncommercial Net Position"]:
+                cot_index.append(
+                    dcalc.cot_index_calculation(
+                        x,
+                        extracted_data["Noncommercial Net Position"].min(),
+                        extracted_data["Noncommercial Net Position"].max(),
                     )
                 )
 
