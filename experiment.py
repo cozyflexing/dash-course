@@ -42,7 +42,7 @@ app.layout = html.Div(
         html.Div(
             [
                 html.H1("Sixteen Analytics Dashboard"),
-                dcc.Dropdown(id="asset_options", options=asset_options, value="NASDAQ"),
+                dcc.Dropdown(id="asset_options", options=asset_options, value="USD"),
             ]
         ),
         html.Div(
