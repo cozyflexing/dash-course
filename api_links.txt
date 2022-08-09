@@ -1,0 +1,11 @@
+json
+EURO = https://data.nasdaq.com/api/v3/datasets/CFTC/099741_FO_L_ALL.json?api_key=dKxFC2Wn7ckKFyatyDC3 - done
+USD = https://data.nasdaq.com/api/v3/datasets/CFTC/098662_FO_L_ALL.json?api_key=dKxFC2Wn7ckKFyatyDC3 - done
+GBP = https://data.nasdaq.com/api/v3/datasets/CFTC/096742_FO_L_ALL.json?api_key=dKxFC2Wn7ckKFyatyDC3 - done
+CAD = https://data.nasdaq.com/api/v3/datasets/CFTC/090741_FO_L_ALL.json?api_key=dKxFC2Wn7ckKFyatyDC3 - done
+JPY = https://data.nasdaq.com/api/v3/datasets/CFTC/097741_FO_L_ALL.json?api_key=dKxFC2Wn7ckKFyatyDC3 - done
+AUD = https://data.nasdaq.com/api/v3/datasets/CFTC/232741_FO_L_ALL.json?api_key=dKxFC2Wn7ckKFyatyDC3 - done
+GOLD = https://data.nasdaq.com/api/v3/datasets/CFTC/088691_FO_L_ALL.json?api_key=dKxFC2Wn7ckKFyatyDC3 - done
+WTI = https://data.nasdaq.com/api/v3/datasets/CFTC/067651_FO_L_ALL.json?api_key=dKxFC2Wn7ckKFyatyDC3 - done
+S&P 500= https://data.nasdaq.com/api/v3/datasets/CFTC/13874A_FO_L_ALL.json?api_key=dKxFC2Wn7ckKFyatyDC3 - done
+NASDAQ = https://data.nasdaq.com/api/v3/datasets/CFTC/209742_FO_L_ALL.json?api_key=dKxFC2Wn7ckKFyatyDC3 - done
