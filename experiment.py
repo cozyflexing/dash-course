@@ -153,7 +153,6 @@ def standard_graph_update(selected_asset, selected_data, selected_lookback):
 )
 def calculated_grap_update(selected_asset, selected_calculation, selected_lookback):
     cot_index, copy_of_cot_index, cot_movement_index = [], [], []
-
     if selected_calculation == "COT Index Commercial":
         if selected_lookback == "6 Months":
             extracted_data = pd.read_csv(
@@ -221,6 +220,9 @@ def calculated_grap_update(selected_asset, selected_calculation, selected_lookba
                 "x": "Dates",
             },
         )
+        line_fig.add_hrect(
+            y0=5, y1=-1, line_width=0, fillcolor="red", opacity=0.2
+        ).add_hrect(y0=90, y1=101, line_width=0, fillcolor="green", opacity=0.2)
     if selected_calculation == "COT Index Noncommercial":
         if selected_lookback == "6 Months":
             extracted_data = pd.read_csv(
@@ -288,7 +290,11 @@ def calculated_grap_update(selected_asset, selected_calculation, selected_lookba
                 "x": "Dates",
             },
         )
+        line_fig.add_hrect(
+            y0=5, y1=-1, line_width=0, fillcolor="red", opacity=0.2
+        ).add_hrect(y0=90, y1=101, line_width=0, fillcolor="green", opacity=0.2)
     if selected_calculation == "COT Movement Index Commercial":
+        line_fig = px.line()
         if selected_lookback == "6 Months":
             extracted_data = pd.read_csv(
                 f"CSV FILES/CFTC_{selected_asset}.csv", nrows=26

@@ -27,3 +27,4 @@ for x in cot_index:
     if len(copy_of_cot_index) >= 7:
         difference = copy_of_cot_index[-7] - copy_of_cot_index[-1]
         cot_movement_index.append(difference)
+    
