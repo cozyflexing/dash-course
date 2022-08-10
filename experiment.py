@@ -43,7 +43,11 @@ look_back_options = [
     "Max",
 ]
 
-calc_options = ["COT Index Commercial", "COT Index Noncommercial", "COT Movement Index"]
+calc_options = [
+    "COT Index Commercial",
+    "COT Index Noncommercial",
+    "COT Movement Index Commercial",
+]
 
 app = dash.Dash()
 
@@ -148,7 +152,8 @@ def standard_graph_update(selected_asset, selected_data, selected_lookback):
     Input(component_id="lookback_calc", component_property="value"),
 )
 def calculated_grap_update(selected_asset, selected_calculation, selected_lookback):
-    cot_index = []
+    cot_index, copy_of_cot_index, cot_movement_index = [], [], []
+
     if selected_calculation == "COT Index Commercial":
         if selected_lookback == "6 Months":
             extracted_data = pd.read_csv(
@@ -208,6 +213,14 @@ def calculated_grap_update(selected_asset, selected_calculation, selected_lookba
                         extracted_data["Commercial Net Position"].max(),
                     )
                 )
+        line_fig = px.line(
+            x=extracted_data["Date"],
+            y=cot_index,
+            labels={
+                "y": f"{selected_calculation} {selected_asset}",
+                "x": "Dates",
+            },
+        )
     if selected_calculation == "COT Index Noncommercial":
         if selected_lookback == "6 Months":
             extracted_data = pd.read_csv(
@@ -267,18 +280,99 @@ def calculated_grap_update(selected_asset, selected_calculation, selected_lookba
                         extracted_data["Noncommercial Net Position"].max(),
                     )
                 )
-
-    line_fig = px.line(
-        x=extracted_data["Date"],
-        y=cot_index,
-        labels={
-            "y": f"{selected_calculation} {selected_asset}",
-            "x": "Dates",
-        },
-    )
-    if selected_calculation == "COT Index Commercial" or "COT Index Noncommercial":
-        line_fig.add_hrect(
-            y0=-1, y1=5, line_width=0, fillcolor="red", opacity=0.2).add_hrect(y0=90, y1=101, line_width=0, fillcolor="green", opacity=0.2)
+        line_fig = px.line(
+            x=extracted_data["Date"],
+            y=cot_index,
+            labels={
+                "y": f"{selected_calculation} {selected_asset}",
+                "x": "Dates",
+            },
+        )
+    if selected_calculation == "COT Movement Index Commercial":
+        if selected_lookback == "6 Months":
+            extracted_data = pd.read_csv(
+                f"CSV FILES/CFTC_{selected_asset}.csv", nrows=26
+            )
+            for x in extracted_data["Commercial Net Position"]:
+                cot_index.append(
+                    dcalc.cot_index_calculation(
+                        x,
+                        extracted_data["Commercial Net Position"].min(),
+                        extracted_data["Commercial Net Position"].max(),
+                    )
+                )
+            for x in cot_index:
+                copy_of_cot_index.append(x)
+                if len(copy_of_cot_index) >= 7:
+                    difference = copy_of_cot_index[-7] - copy_of_cot_index[-1]
+                    cot_movement_index.append(difference)
+        elif selected_lookback == "1 Year":
+            extracted_data = pd.read_csv(
+                f"CSV FILES/CFTC_{selected_asset}.csv", nrows=52
+            )
+            for x in extracted_data["Commercial Net Position"]:
+                cot_index.append(
+                    dcalc.cot_index_calculation(
+                        x,
+                        extracted_data["Commercial Net Position"].min(),
+                        extracted_data["Commercial Net Position"].max(),
+                    )
+                )
+            for x in cot_index:
+                copy_of_cot_index.append(x)
+                if len(copy_of_cot_index) >= 7:
+                    difference = copy_of_cot_index[-7] - copy_of_cot_index[-1]
+                    cot_movement_index.append(difference)
+        elif selected_lookback == "3 Years":
+            extracted_data = pd.read_csv(
+                f"CSV FILES/CFTC_{selected_asset}.csv", nrows=156
+            )
+            for x in extracted_data["Commercial Net Position"]:
+                cot_index.append(
+                    dcalc.cot_index_calculation(
+                        x,
+                        extracted_data["Commercial Net Position"].min(),
+                        extracted_data["Commercial Net Position"].max(),
+                    )
+                )
+            for x in cot_index:
+                copy_of_cot_index.append(x)
+                if len(copy_of_cot_index) >= 7:
+                    difference = copy_of_cot_index[-7] - copy_of_cot_index[-1]
+                    cot_movement_index.append(difference)
+        elif selected_lookback == "5 Years":
+            extracted_data = pd.read_csv(
+                f"CSV FILES/CFTC_{selected_asset}.csv", nrows=260
+            )
+            for x in extracted_data["Commercial Net Position"]:
+                cot_index.append(
+                    dcalc.cot_index_calculation(
+                        x,
+                        extracted_data["Commercial Net Position"].min(),
+                        extracted_data["Commercial Net Position"].max(),
+                    )
+                )
+            for x in cot_index:
+                copy_of_cot_index.append(x)
+                if len(copy_of_cot_index) >= 7:
+                    difference = copy_of_cot_index[-7] - copy_of_cot_index[-1]
+                    cot_movement_index.append(difference)
+        else:
+            extracted_data = pd.read_csv(f"CSV FILES/CFTC_{selected_asset}.csv")
+            for x in extracted_data["Commercial Net Position"]:
+                cot_index.append(
+                    dcalc.cot_index_calculation(
+                        x,
+                        extracted_data["Commercial Net Position"].min(),
+                        extracted_data["Commercial Net Position"].max(),
+                    )
+                )
+            for x in cot_index:
+                copy_of_cot_index.append(x)
+                if len(copy_of_cot_index) >= 7:
+                    difference = copy_of_cot_index[-7] - copy_of_cot_index[-1]
+                    cot_movement_index.append(difference)
+        line_fig = px.bar(x=extracted_data["Date"][6:], y=cot_movement_index)
 
     return line_fig
 
