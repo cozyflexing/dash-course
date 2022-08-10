@@ -1,9 +1,7 @@
 from urllib import response
 import pandas as pd
 import requests
-import time
 
-start = time.time()
 api_list = {
     "NASDAQ": "https://data.nasdaq.com/api/v3/datasets/CFTC/209742_FO_L_ALL.csv?api_key=dKxFC2Wn7ckKFyatyDC3",
     "SP500": "https://data.nasdaq.com/api/v3/datasets/CFTC/13874A_FO_L_ALL.csv?api_key=dKxFC2Wn7ckKFyatyDC3",
@@ -54,7 +52,3 @@ for x in api_list:
         compression="infer",
         date_format=None,
     )
-
-end = time.time()
-
-print("The time of execution of above program is :", end - start)
