@@ -52,10 +52,13 @@ calc_options = [
     "COT Movement Index Noncommercial",
 ]
 
+
 app = dash.Dash(
+    __name__,
+    title="sixteenanalytics",
     external_stylesheets=[
         dbc.themes.MORPH,
-    ]
+    ],
 )
 
 app.layout = html.Div(
