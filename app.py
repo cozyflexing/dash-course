@@ -123,35 +123,35 @@ app.layout = html.Div(
 )
 def standard_graph_update(selected_asset, selected_data, selected_lookback):
     if selected_lookback == "6 Months":
-        extracted_data = pd.read_csv(f"CSV FILES/CFTC_{selected_asset}.csv", nrows=26)
+        extracted_data = pd.read_csv(f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=26)
         line_fig = px.line(
             x=extracted_data["Date"],
             y=extracted_data[f"{selected_data}"],
             labels={"y": f"{selected_data} {selected_asset}", "x": "Dates"},
         )
     elif selected_lookback == "1 Year":
-        extracted_data = pd.read_csv(f"CSV FILES/CFTC_{selected_asset}.csv", nrows=52)
+        extracted_data = pd.read_csv(f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=52)
         line_fig = px.line(
             x=extracted_data["Date"],
             y=extracted_data[f"{selected_data}"],
             labels={"y": f"{selected_data} {selected_asset}", "x": "Dates"},
         )
     elif selected_lookback == "3 Years":
-        extracted_data = pd.read_csv(f"CSV FILES/CFTC_{selected_asset}.csv", nrows=156)
+        extracted_data = pd.read_csv(f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=156)
         line_fig = px.line(
             x=extracted_data["Date"],
             y=extracted_data[f"{selected_data}"],
             labels={"y": f"{selected_data} {selected_asset}", "x": "Dates"},
         )
     elif selected_lookback == "5 Years":
-        extracted_data = pd.read_csv(f"CSV FILES/CFTC_{selected_asset}.csv", nrows=260)
+        extracted_data = pd.read_csv(f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=260)
         line_fig = px.line(
             x=extracted_data["Date"],
             y=extracted_data[f"{selected_data}"],
             labels={"y": f"{selected_data} {selected_asset}", "x": "Dates"},
         )
     elif selected_lookback == "Max":
-        extracted_data = pd.read_csv(f"CSV FILES/CFTC_{selected_asset}.csv")
+        extracted_data = pd.read_csv(f"CSV_FILES/CFTC_{selected_asset}.csv")
         line_fig = px.line(
             x=extracted_data["Date"],
             y=extracted_data[f"{selected_data}"],
@@ -171,7 +171,7 @@ def calculated_grap_update(selected_asset, selected_calculation, selected_lookba
     if selected_calculation == "COT Index Commercial":
         if selected_lookback == "6 Months":
             extracted_data = pd.read_csv(
-                f"CSV FILES/CFTC_{selected_asset}.csv", nrows=26
+                f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=26
             )
             for x in extracted_data["Commercial Net Position"]:
                 cot_index.append(
@@ -183,7 +183,7 @@ def calculated_grap_update(selected_asset, selected_calculation, selected_lookba
                 )
         elif selected_lookback == "1 Year":
             extracted_data = pd.read_csv(
-                f"CSV FILES/CFTC_{selected_asset}.csv", nrows=52
+                f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=52
             )
             for x in extracted_data["Commercial Net Position"]:
                 cot_index.append(
@@ -195,7 +195,7 @@ def calculated_grap_update(selected_asset, selected_calculation, selected_lookba
                 )
         elif selected_lookback == "3 Year":
             extracted_data = pd.read_csv(
-                f"CSV FILES/CFTC_{selected_asset}.csv", nrows=156
+                f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=156
             )
             for x in extracted_data["Commercial Net Position"]:
                 cot_index.append(
@@ -207,7 +207,7 @@ def calculated_grap_update(selected_asset, selected_calculation, selected_lookba
                 )
         elif selected_lookback == "5 Year":
             extracted_data = pd.read_csv(
-                f"CSV FILES/CFTC_{selected_asset}.csv", nrows=260
+                f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=260
             )
             for x in extracted_data["Commercial Net Position"]:
                 cot_index.append(
@@ -218,7 +218,7 @@ def calculated_grap_update(selected_asset, selected_calculation, selected_lookba
                     )
                 )
         else:
-            extracted_data = pd.read_csv(f"CSV FILES/CFTC_{selected_asset}.csv")
+            extracted_data = pd.read_csv(f"CSV_FILES/CFTC_{selected_asset}.csv")
             for x in extracted_data["Commercial Net Position"]:
                 cot_index.append(
                     dcalc.cot_index_calculation(
@@ -241,7 +241,7 @@ def calculated_grap_update(selected_asset, selected_calculation, selected_lookba
     if selected_calculation == "COT Index Noncommercial":
         if selected_lookback == "6 Months":
             extracted_data = pd.read_csv(
-                f"CSV FILES/CFTC_{selected_asset}.csv", nrows=26
+                f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=26
             )
             for x in extracted_data["Noncommercial Net Position"]:
                 cot_index.append(
@@ -253,7 +253,7 @@ def calculated_grap_update(selected_asset, selected_calculation, selected_lookba
                 )
         elif selected_lookback == "1 Year":
             extracted_data = pd.read_csv(
-                f"CSV FILES/CFTC_{selected_asset}.csv", nrows=52
+                f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=52
             )
             for x in extracted_data["Noncommercial Net Position"]:
                 cot_index.append(
@@ -265,7 +265,7 @@ def calculated_grap_update(selected_asset, selected_calculation, selected_lookba
                 )
         elif selected_lookback == "3 Year":
             extracted_data = pd.read_csv(
-                f"CSV FILES/CFTC_{selected_asset}.csv", nrows=156
+                f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=156
             )
             for x in extracted_data["Noncommercial Net Position"]:
                 cot_index.append(
@@ -277,7 +277,7 @@ def calculated_grap_update(selected_asset, selected_calculation, selected_lookba
                 )
         elif selected_lookback == "5 Year":
             extracted_data = pd.read_csv(
-                f"CSV FILES/CFTC_{selected_asset}.csv", nrows=260
+                f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=260
             )
             for x in extracted_data["Noncommercial Net Position"]:
                 cot_index.append(
@@ -288,7 +288,7 @@ def calculated_grap_update(selected_asset, selected_calculation, selected_lookba
                     )
                 )
         else:
-            extracted_data = pd.read_csv(f"CSV FILES/CFTC_{selected_asset}.csv")
+            extracted_data = pd.read_csv(f"CSV_FILES/CFTC_{selected_asset}.csv")
             for x in extracted_data["Noncommercial Net Position"]:
                 cot_index.append(
                     dcalc.cot_index_calculation(
@@ -312,7 +312,7 @@ def calculated_grap_update(selected_asset, selected_calculation, selected_lookba
         line_fig = px.line()
         if selected_lookback == "6 Months":
             extracted_data = pd.read_csv(
-                f"CSV FILES/CFTC_{selected_asset}.csv", nrows=26
+                f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=26
             )
             for x in extracted_data["Commercial Net Position"]:
                 cot_index.append(
@@ -329,7 +329,7 @@ def calculated_grap_update(selected_asset, selected_calculation, selected_lookba
                     cot_movement_index.append(difference)
         elif selected_lookback == "1 Year":
             extracted_data = pd.read_csv(
-                f"CSV FILES/CFTC_{selected_asset}.csv", nrows=52
+                f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=52
             )
             for x in extracted_data["Commercial Net Position"]:
                 cot_index.append(
@@ -346,7 +346,7 @@ def calculated_grap_update(selected_asset, selected_calculation, selected_lookba
                     cot_movement_index.append(difference)
         elif selected_lookback == "3 Years":
             extracted_data = pd.read_csv(
-                f"CSV FILES/CFTC_{selected_asset}.csv", nrows=156
+                f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=156
             )
             for x in extracted_data["Commercial Net Position"]:
                 cot_index.append(
@@ -363,7 +363,7 @@ def calculated_grap_update(selected_asset, selected_calculation, selected_lookba
                     cot_movement_index.append(difference)
         elif selected_lookback == "5 Years":
             extracted_data = pd.read_csv(
-                f"CSV FILES/CFTC_{selected_asset}.csv", nrows=260
+                f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=260
             )
             for x in extracted_data["Commercial Net Position"]:
                 cot_index.append(
@@ -379,7 +379,7 @@ def calculated_grap_update(selected_asset, selected_calculation, selected_lookba
                     difference = copy_of_cot_index[-7] - copy_of_cot_index[-1]
                     cot_movement_index.append(difference)
         else:
-            extracted_data = pd.read_csv(f"CSV FILES/CFTC_{selected_asset}.csv")
+            extracted_data = pd.read_csv(f"CSV_FILES/CFTC_{selected_asset}.csv")
             for x in extracted_data["Commercial Net Position"]:
                 cot_index.append(
                     dcalc.cot_index_calculation(
@@ -398,7 +398,7 @@ def calculated_grap_update(selected_asset, selected_calculation, selected_lookba
         line_fig = px.line()
         if selected_lookback == "6 Months":
             extracted_data = pd.read_csv(
-                f"CSV FILES/CFTC_{selected_asset}.csv", nrows=26
+                f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=26
             )
             for x in extracted_data["Noncommercial Net Position"]:
                 cot_index.append(
@@ -415,7 +415,7 @@ def calculated_grap_update(selected_asset, selected_calculation, selected_lookba
                     cot_movement_index.append(difference)
         elif selected_lookback == "1 Year":
             extracted_data = pd.read_csv(
-                f"CSV FILES/CFTC_{selected_asset}.csv", nrows=52
+                f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=52
             )
             for x in extracted_data["Noncommercial Net Position"]:
                 cot_index.append(
@@ -432,7 +432,7 @@ def calculated_grap_update(selected_asset, selected_calculation, selected_lookba
                     cot_movement_index.append(difference)
         elif selected_lookback == "3 Years":
             extracted_data = pd.read_csv(
-                f"CSV FILES/CFTC_{selected_asset}.csv", nrows=156
+                f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=156
             )
             for x in extracted_data["Noncommercial Net Position"]:
                 cot_index.append(
@@ -449,7 +449,7 @@ def calculated_grap_update(selected_asset, selected_calculation, selected_lookba
                     cot_movement_index.append(difference)
         elif selected_lookback == "5 Years":
             extracted_data = pd.read_csv(
-                f"CSV FILES/CFTC_{selected_asset}.csv", nrows=260
+                f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=260
             )
             for x in extracted_data["Noncommercial Net Position"]:
                 cot_index.append(
@@ -465,7 +465,7 @@ def calculated_grap_update(selected_asset, selected_calculation, selected_lookba
                     difference = copy_of_cot_index[-7] - copy_of_cot_index[-1]
                     cot_movement_index.append(difference)
         else:
-            extracted_data = pd.read_csv(f"CSV FILES/CFTC_{selected_asset}.csv")
+            extracted_data = pd.read_csv(f"CSV_FILES/CFTC_{selected_asset}.csv")
             for x in extracted_data["Noncommercial Net Position"]:
                 cot_index.append(
                     dcalc.cot_index_calculation(
