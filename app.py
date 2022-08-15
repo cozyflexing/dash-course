@@ -92,7 +92,6 @@ sidebar = html.Div(
             [
                 dbc.NavLink("CFTC", href="/", active="exact"),
                 dbc.NavLink("COT", href="/COT-CALCULATIONS", active="exact"),
-                dbc.NavLink("Page 2", href="/page-2", active="exact"),
             ],
             vertical=True,
             pills=True,
@@ -154,11 +153,7 @@ def render_page_content(pathname):
             ),
             dcc.Graph(id="calculated_data_garph"),
         ]
-    elif pathname == "/page-2":
-        return [
-            html.H1("High School in Iran", style={"textAlign": "center"}),
-            dcc.Graph(id="linegraph", figure=px.line(df, x="Date", y="Open Interest")),
-        ]
+
     # If the user tries to reach a different page, return a 404 message
     return dbc.Jumbotron(
         [
