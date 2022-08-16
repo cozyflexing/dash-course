@@ -24,9 +24,9 @@ api_list = {
 if now.strftime("%H:%M on %A") == "12:00 on Friday":
     for x in api_list:
         response = requests.get(f"{api_list[x]}")
-        with open(f"CSV_FILES/CFTC_{x}.csv", "w+") as f:
+        with open(f"data/CFTC_{x}.csv", "w+") as f:
             f.write(response.text)
-        data = pd.read_csv(f"CSV_FILES/CFTC_{x}.csv")
+        data = pd.read_csv(f"data/CFTC_{x}.csv")
         data["Commercial Net Position"] = (
             data["Commercial Long"] - data["Commercial Short"]
         )
@@ -34,7 +34,7 @@ if now.strftime("%H:%M on %A") == "12:00 on Friday":
             data["Noncommercial Long"] - data["Noncommercial Short"]
         )
         data_csv = data.to_csv(
-            path_or_buf=f"CSV_FILES/CFTC_{x}.csv",
+            path_or_buf=f"data/CFTC_{x}.csv",
             sep=",",
             columns=[
                 "Date",
