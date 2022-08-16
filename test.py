@@ -39,13 +39,13 @@ long_percentage_of_total_oi = (
 )
 
 ########
-
 import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output
 from dash import dcc, dash, html
 import plotly.express as px
 import pandas as pd
 import data_calculations as dcalc
+import pathlib
 
 app = dash.Dash(
     __name__,
@@ -54,6 +54,18 @@ app = dash.Dash(
         dbc.themes.BOOTSTRAP,
     ],
 )
+
+
+def get_pandas_data(csv_filename: str) -> pd.DataFrame:
+    """
+    Load data from /data directory as a pandas DataFrame
+    using relative paths. Relative paths are necessary for
+    data loading to work in Heroku.
+    """
+    PATH = pathlib.Path(__file__).parent
+    DATA_PATH = PATH.joinpath("data").resolve()
+    return pd.read_csv(DATA_PATH.joinpath(csv_filename))
+
 
 data_options = [
     "Open Interest",
@@ -95,10 +107,10 @@ look_back_options = [
 ]
 
 calc_options = [
-    "COT Index Commercial",
-    "COT Index Noncommercial",
-    "COT Movement Index Commercial",
-    "COT Movement Index Noncommercial",
+    "Commercial COT Index",
+    "Noncommercial COT Index",
+    "Commercial COT Movement Index",
+    "Noncommercial COT Movement Index",
 ]
 
 ratio_options = [
@@ -109,6 +121,10 @@ ratio_options = [
     "Long percentage of commercial open interest",
     "Long percentage of noncommercial open interest",
 ]
+
+
+# Declare server for Heroku deployment. Needed for Procfile.
+server = app.server
 
 # styling the sidebar
 SIDEBAR_STYLE = {
@@ -161,11 +177,11 @@ def render_page_content(pathname):
     if pathname == "/":
         return [
             html.H1("CFTC Data", style={"textAlign": "center"}),
-            dcc.Graph(id="regular_data_graph"),
+            dcc.Graph(id="cftc_graph"),
             dcc.Dropdown(
                 id="asset_options",
                 options=asset_options,
-                value="USD",
+                value="NASDAQ",
                 className="m-1",
             ),
             dcc.Dropdown(
@@ -184,21 +200,21 @@ def render_page_content(pathname):
     elif pathname == "/COT-CALCULATIONS":
         return [
             html.H1("COT Calculations", style={"textAlign": "center"}),
-            dcc.Graph(id="calculated_data_garph"),
+            dcc.Graph(id="cot_graph"),
             dcc.Dropdown(
-                id="asset_options_calc",
+                id="asset_options_cot",
                 options=asset_options,
                 value="NASDAQ",
                 className="m-1",
             ),
             dcc.Dropdown(
-                id="calc_options",
+                id="cot_options",
                 options=calc_options,
-                value="COT Index Commercial",
+                value="Commercial COT Index",
                 className="m-1",
             ),
             dcc.Dropdown(
-                id="lookback_calc",
+                id="lookback_cot",
                 options=look_back_options,
                 value="1 year",
                 className="m-1",
@@ -239,52 +255,51 @@ def render_page_content(pathname):
 
 
 @app.callback(
-    Output(component_id="regular_data_graph", component_property="figure"),
+    Output(component_id="cftc_graph", component_property="figure"),
     Input(component_id="asset_options", component_property="value"),
     Input(component_id="data_options", component_property="value"),
     Input(component_id="lookback", component_property="value"),
 )
 def cftc_graph(selected_asset, selected_data, selected_lookback):
     if selected_lookback == "6 months":
-        extracted_data = pd.read_csv(f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=26)
+        extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
+        extracted_data = extracted_data.head(26)
         line_fig = px.line(
-            title=f"The {selected_data} for the {selected_asset} over the past {selected_lookback}.",
             template="plotly_white",
             x=extracted_data["Date"],
             y=extracted_data[f"{selected_data}"],
             labels={"y": f"{selected_data} {selected_asset}", "x": "Dates"},
         )
     elif selected_lookback == "1 year":
-        extracted_data = pd.read_csv(f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=52)
+        extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
+        extracted_data = extracted_data.head(52)
         line_fig = px.line(
-            title=f"The {selected_data} for the {selected_asset} over the past year.",
             template="plotly_white",
             x=extracted_data["Date"],
             y=extracted_data[f"{selected_data}"],
             labels={"y": f"{selected_data} {selected_asset}", "x": "Dates"},
         )
     elif selected_lookback == "3 years":
-        extracted_data = pd.read_csv(f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=156)
+        extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
+        extracted_data = extracted_data.head(156)
         line_fig = px.line(
-            title=f"The {selected_data} for the {selected_asset} over the past {selected_lookback}.",
             template="plotly_white",
             x=extracted_data["Date"],
             y=extracted_data[f"{selected_data}"],
             labels={"y": f"{selected_data} {selected_asset}", "x": "Dates"},
         )
     elif selected_lookback == "5 years":
-        extracted_data = pd.read_csv(f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=260)
+        extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
+        extracted_data = extracted_data.head(260)
         line_fig = px.line(
-            title=f"The {selected_data} for the {selected_asset} over the past {selected_lookback}.",
             template="plotly_white",
             x=extracted_data["Date"],
             y=extracted_data[f"{selected_data}"],
             labels={"y": f"{selected_data} {selected_asset}", "x": "Dates"},
         )
     elif selected_lookback == "Max":
-        extracted_data = pd.read_csv(f"CSV_FILES/CFTC_{selected_asset}.csv")
+        extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
         line_fig = px.line(
-            title=f"The {selected_data} for the {selected_asset} over the past {selected_lookback}.",
             template="plotly_white",
             x=extracted_data["Date"],
             y=extracted_data[f"{selected_data}"],
@@ -294,18 +309,17 @@ def cftc_graph(selected_asset, selected_data, selected_lookback):
 
 
 @app.callback(
-    Output(component_id="calculated_data_garph", component_property="figure"),
-    Input(component_id="asset_options_calc", component_property="value"),
-    Input(component_id="calc_options", component_property="value"),
-    Input(component_id="lookback_calc", component_property="value"),
+    Output(component_id="cot_graph", component_property="figure"),
+    Input(component_id="asset_options_cot", component_property="value"),
+    Input(component_id="cot_options", component_property="value"),
+    Input(component_id="lookback_cot", component_property="value"),
 )
 def cot_graph(selected_asset, selected_calculation, selected_lookback):
     cot_index, copy_of_cot_index, cot_movement_index = [], [], []
-    if selected_calculation == "COT Index Commercial":
+    if selected_calculation == "Commercial COT Index":
         if selected_lookback == "6 months":
-            extracted_data = pd.read_csv(
-                f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=26
-            )
+            extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
+            extracted_data = extracted_data.head(26)
             for x in extracted_data["Commercial Net Position"]:
                 cot_index.append(
                     dcalc.cot_index_calculation(
@@ -315,9 +329,8 @@ def cot_graph(selected_asset, selected_calculation, selected_lookback):
                     )
                 )
         elif selected_lookback == "1 year":
-            extracted_data = pd.read_csv(
-                f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=52
-            )
+            extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
+            extracted_data = extracted_data.head(52)
             for x in extracted_data["Commercial Net Position"]:
                 cot_index.append(
                     dcalc.cot_index_calculation(
@@ -326,10 +339,9 @@ def cot_graph(selected_asset, selected_calculation, selected_lookback):
                         extracted_data["Commercial Net Position"].max(),
                     )
                 )
-        elif selected_lookback == "3 Year":
-            extracted_data = pd.read_csv(
-                f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=156
-            )
+        elif selected_lookback == "3 years":
+            extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
+            extracted_data = extracted_data.head(156)
             for x in extracted_data["Commercial Net Position"]:
                 cot_index.append(
                     dcalc.cot_index_calculation(
@@ -338,10 +350,9 @@ def cot_graph(selected_asset, selected_calculation, selected_lookback):
                         extracted_data["Commercial Net Position"].max(),
                     )
                 )
-        elif selected_lookback == "5 Year":
-            extracted_data = pd.read_csv(
-                f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=260
-            )
+        elif selected_lookback == "5 years":
+            extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
+            extracted_data = extracted_data.head(260)
             for x in extracted_data["Commercial Net Position"]:
                 cot_index.append(
                     dcalc.cot_index_calculation(
@@ -351,7 +362,7 @@ def cot_graph(selected_asset, selected_calculation, selected_lookback):
                     )
                 )
         else:
-            extracted_data = pd.read_csv(f"CSV_FILES/CFTC_{selected_asset}.csv")
+            extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
             for x in extracted_data["Commercial Net Position"]:
                 cot_index.append(
                     dcalc.cot_index_calculation(
@@ -360,24 +371,29 @@ def cot_graph(selected_asset, selected_calculation, selected_lookback):
                         extracted_data["Commercial Net Position"].max(),
                     )
                 )
+        if selected_lookback == "1 year":
+            title = (
+                f"The {selected_calculation} for {selected_asset} over the past year"
+            )
+        else:
+            title = f"The {selected_calculation} for {selected_asset} over the past {selected_lookback}"
         line_fig = px.line(
-            title=f"The {selected_calculation} for the {selected_asset} over the past {selected_lookback}.",
             template="plotly_white",
             x=extracted_data["Date"],
             y=cot_index,
+            title=title,
             labels={
-                "y": f"{selected_calculation} {selected_asset}",
+                "y": "Index",
                 "x": "Dates",
             },
         )
         line_fig.add_hrect(
-            y0=5, y1=-1, line_width=0, fillcolor="red", opacity=0.5
-        ).add_hrect(y0=90, y1=101, line_width=0, fillcolor="green", opacity=0.5)
-    if selected_calculation == "COT Index Noncommercial":
+            y0=5, y1=-1, line_width=0, fillcolor="red", opacity=0.2
+        ).add_hrect(y0=90, y1=101, line_width=0, fillcolor="green", opacity=0.2)
+    if selected_calculation == "Noncommercial COT Index":
         if selected_lookback == "6 months":
-            extracted_data = pd.read_csv(
-                f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=26
-            )
+            extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
+            extracted_data = extracted_data.head(26)
             for x in extracted_data["Noncommercial Net Position"]:
                 cot_index.append(
                     dcalc.cot_index_calculation(
@@ -387,9 +403,8 @@ def cot_graph(selected_asset, selected_calculation, selected_lookback):
                     )
                 )
         elif selected_lookback == "1 year":
-            extracted_data = pd.read_csv(
-                f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=52
-            )
+            extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
+            extracted_data = extracted_data.head(52)
             for x in extracted_data["Noncommercial Net Position"]:
                 cot_index.append(
                     dcalc.cot_index_calculation(
@@ -398,10 +413,9 @@ def cot_graph(selected_asset, selected_calculation, selected_lookback):
                         extracted_data["Noncommercial Net Position"].max(),
                     )
                 )
-        elif selected_lookback == "3 Year":
-            extracted_data = pd.read_csv(
-                f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=156
-            )
+        elif selected_lookback == "3 years":
+            extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
+            extracted_data = extracted_data.head(156)
             for x in extracted_data["Noncommercial Net Position"]:
                 cot_index.append(
                     dcalc.cot_index_calculation(
@@ -410,10 +424,9 @@ def cot_graph(selected_asset, selected_calculation, selected_lookback):
                         extracted_data["Noncommercial Net Position"].max(),
                     )
                 )
-        elif selected_lookback == "5 Year":
-            extracted_data = pd.read_csv(
-                f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=260
-            )
+        elif selected_lookback == "5 years":
+            extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
+            extracted_data = extracted_data.head(260)
             for x in extracted_data["Noncommercial Net Position"]:
                 cot_index.append(
                     dcalc.cot_index_calculation(
@@ -423,7 +436,7 @@ def cot_graph(selected_asset, selected_calculation, selected_lookback):
                     )
                 )
         else:
-            extracted_data = pd.read_csv(f"CSV_FILES/CFTC_{selected_asset}.csv")
+            extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
             for x in extracted_data["Noncommercial Net Position"]:
                 cot_index.append(
                     dcalc.cot_index_calculation(
@@ -432,27 +445,32 @@ def cot_graph(selected_asset, selected_calculation, selected_lookback):
                         extracted_data["Noncommercial Net Position"].max(),
                     )
                 )
+        if selected_lookback == "1 year":
+            title = (
+                f"The {selected_calculation} for {selected_asset} over the past year"
+            )
+        else:
+            title = f"The {selected_calculation} for {selected_asset} over the past {selected_lookback}"
         line_fig = px.line(
-            title=f"The {selected_calculation} for the {selected_asset} over the past {selected_lookback}.",
             template="plotly_white",
             x=extracted_data["Date"],
             y=cot_index,
+            title=title,
             labels={
-                "y": f"{selected_calculation} {selected_asset}",
+                "y": "Index",
                 "x": "Dates",
             },
         )
         line_fig.add_hrect(
-            y0=5, y1=-1, line_width=0, fillcolor="red", opacity=0.5
-        ).add_hrect(y0=90, y1=101, line_width=0, fillcolor="green", opacity=0.5)
-    if selected_calculation == "COT Movement Index Commercial":
+            y0=5, y1=-1, line_width=0, fillcolor="red", opacity=0.2
+        ).add_hrect(y0=90, y1=101, line_width=0, fillcolor="green", opacity=0.2)
+    if selected_calculation == "Commercial COT Movement Index":
         line_fig = px.line(
             template="plotly_white",
         )
         if selected_lookback == "6 months":
-            extracted_data = pd.read_csv(
-                f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=26
-            )
+            extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
+            extracted_data = extracted_data.head(26)
             for x in extracted_data["Commercial Net Position"]:
                 cot_index.append(
                     dcalc.cot_index_calculation(
@@ -467,9 +485,8 @@ def cot_graph(selected_asset, selected_calculation, selected_lookback):
                     difference = copy_of_cot_index[-7] - copy_of_cot_index[-1]
                     cot_movement_index.append(difference)
         elif selected_lookback == "1 year":
-            extracted_data = pd.read_csv(
-                f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=52
-            )
+            extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
+            extracted_data = extracted_data.head(52)
             for x in extracted_data["Commercial Net Position"]:
                 cot_index.append(
                     dcalc.cot_index_calculation(
@@ -484,9 +501,8 @@ def cot_graph(selected_asset, selected_calculation, selected_lookback):
                     difference = copy_of_cot_index[-7] - copy_of_cot_index[-1]
                     cot_movement_index.append(difference)
         elif selected_lookback == "3 years":
-            extracted_data = pd.read_csv(
-                f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=156
-            )
+            extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
+            extracted_data = extracted_data.head(156)
             for x in extracted_data["Commercial Net Position"]:
                 cot_index.append(
                     dcalc.cot_index_calculation(
@@ -501,9 +517,8 @@ def cot_graph(selected_asset, selected_calculation, selected_lookback):
                     difference = copy_of_cot_index[-7] - copy_of_cot_index[-1]
                     cot_movement_index.append(difference)
         elif selected_lookback == "5 years":
-            extracted_data = pd.read_csv(
-                f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=260
-            )
+            extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
+            extracted_data = extracted_data.head(260)
             for x in extracted_data["Commercial Net Position"]:
                 cot_index.append(
                     dcalc.cot_index_calculation(
@@ -518,7 +533,7 @@ def cot_graph(selected_asset, selected_calculation, selected_lookback):
                     difference = copy_of_cot_index[-7] - copy_of_cot_index[-1]
                     cot_movement_index.append(difference)
         else:
-            extracted_data = pd.read_csv(f"CSV_FILES/CFTC_{selected_asset}.csv")
+            extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
             for x in extracted_data["Commercial Net Position"]:
                 cot_index.append(
                     dcalc.cot_index_calculation(
@@ -532,24 +547,29 @@ def cot_graph(selected_asset, selected_calculation, selected_lookback):
                 if len(copy_of_cot_index) >= 7:
                     difference = copy_of_cot_index[-7] - copy_of_cot_index[-1]
                     cot_movement_index.append(difference)
+        if selected_lookback == "1 year":
+            title = (
+                f"The {selected_calculation} for {selected_asset} over the past year"
+            )
+        else:
+            title = f"The {selected_calculation} for {selected_asset} over the past {selected_lookback}"
         line_fig = px.bar(
-            title=f"The {selected_calculation} for the {selected_asset} over the past {selected_lookback}.",
             x=extracted_data["Date"][6:],
             y=cot_movement_index,
             template="plotly_white",
+            title=title,
             labels={
-                "y": f"{selected_calculation} {selected_asset}",
+                "y": "Index",
                 "x": "Dates",
             },
         )
-    if selected_calculation == "COT Movement Index Noncommercial":
+    if selected_calculation == "Noncommercial COT Movement Index":
         line_fig = px.line(
             template="plotly_white",
         )
         if selected_lookback == "6 months":
-            extracted_data = pd.read_csv(
-                f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=26
-            )
+            extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
+            extracted_data = extracted_data.head(26)
             for x in extracted_data["Noncommercial Net Position"]:
                 cot_index.append(
                     dcalc.cot_index_calculation(
@@ -564,9 +584,8 @@ def cot_graph(selected_asset, selected_calculation, selected_lookback):
                     difference = copy_of_cot_index[-7] - copy_of_cot_index[-1]
                     cot_movement_index.append(difference)
         elif selected_lookback == "1 year":
-            extracted_data = pd.read_csv(
-                f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=52
-            )
+            extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
+            extracted_data = extracted_data.head(52)
             for x in extracted_data["Noncommercial Net Position"]:
                 cot_index.append(
                     dcalc.cot_index_calculation(
@@ -581,9 +600,8 @@ def cot_graph(selected_asset, selected_calculation, selected_lookback):
                     difference = copy_of_cot_index[-7] - copy_of_cot_index[-1]
                     cot_movement_index.append(difference)
         elif selected_lookback == "3 years":
-            extracted_data = pd.read_csv(
-                f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=156
-            )
+            extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
+            extracted_data = extracted_data.head(156)
             for x in extracted_data["Noncommercial Net Position"]:
                 cot_index.append(
                     dcalc.cot_index_calculation(
@@ -598,9 +616,8 @@ def cot_graph(selected_asset, selected_calculation, selected_lookback):
                     difference = copy_of_cot_index[-7] - copy_of_cot_index[-1]
                     cot_movement_index.append(difference)
         elif selected_lookback == "5 years":
-            extracted_data = pd.read_csv(
-                f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=260
-            )
+            extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
+            extracted_data = extracted_data.head(260)
             for x in extracted_data["Noncommercial Net Position"]:
                 cot_index.append(
                     dcalc.cot_index_calculation(
@@ -615,7 +632,7 @@ def cot_graph(selected_asset, selected_calculation, selected_lookback):
                     difference = copy_of_cot_index[-7] - copy_of_cot_index[-1]
                     cot_movement_index.append(difference)
         else:
-            extracted_data = pd.read_csv(f"CSV_FILES/CFTC_{selected_asset}.csv")
+            extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
             for x in extracted_data["Noncommercial Net Position"]:
                 cot_index.append(
                     dcalc.cot_index_calculation(
@@ -629,13 +646,19 @@ def cot_graph(selected_asset, selected_calculation, selected_lookback):
                 if len(copy_of_cot_index) >= 7:
                     difference = copy_of_cot_index[-7] - copy_of_cot_index[-1]
                     cot_movement_index.append(difference)
+        if selected_lookback == "1 year":
+            title = (
+                f"The {selected_calculation} for {selected_asset} over the past year"
+            )
+        else:
+            title = f"The {selected_calculation} for {selected_asset} over the past {selected_lookback}"
         line_fig = px.bar(
-            title=f"The {selected_calculation} for the {selected_asset} over the past {selected_lookback}.",
             x=extracted_data["Date"][6:],
             y=cot_movement_index,
             template="plotly_white",
+            title=title,
             labels={
-                "y": f"{selected_calculation} {selected_asset}",
+                "y": "Index",
                 "x": "Dates",
             },
         )
@@ -651,11 +674,10 @@ def cot_graph(selected_asset, selected_calculation, selected_lookback):
 def ratio_graph(selected_asset, selected_ratio, selected_lookback):
     if selected_ratio == "Commercial percentage of total open interest":
         if selected_lookback == "6 months":
-            extracted_data = pd.read_csv(
-                f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=26
-            )
+            extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
+            extracted_data = extracted_data.head(26)
             line_fig = px.line(
-                title=f"The {selected_ratio} for the {selected_asset} over the past {selected_lookback}.",
+                title=f"The {selected_ratio} for {selected_asset} over the past {selected_lookback}.",
                 template="plotly_white",
                 x=extracted_data["Date"],
                 y=(
@@ -666,11 +688,10 @@ def ratio_graph(selected_asset, selected_ratio, selected_lookback):
                 labels={"y": "Percentage", "x": "Dates"},
             )
         elif selected_lookback == "1 year":
-            extracted_data = pd.read_csv(
-                f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=52
-            )
+            extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
+            extracted_data = extracted_data.head(52)
             line_fig = px.line(
-                title=f"The {selected_ratio} for the {selected_asset} over the past {selected_lookback}.",
+                title=f"The {selected_ratio} for {selected_asset} over the past year.",
                 template="plotly_white",
                 x=extracted_data["Date"],
                 y=(
@@ -681,11 +702,10 @@ def ratio_graph(selected_asset, selected_ratio, selected_lookback):
                 labels={"y": "Percentage", "x": "Dates"},
             )
         elif selected_lookback == "3 years":
-            extracted_data = pd.read_csv(
-                f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=156
-            )
+            extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
+            extracted_data = extracted_data.head(156)
             line_fig = px.line(
-                title=f"The {selected_ratio} for the {selected_asset} over the past {selected_lookback}.",
+                title=f"The {selected_ratio} for {selected_asset} over the past {selected_lookback}.",
                 template="plotly_white",
                 x=extracted_data["Date"],
                 y=(
@@ -696,11 +716,10 @@ def ratio_graph(selected_asset, selected_ratio, selected_lookback):
                 labels={"y": "Percentage", "x": "Dates"},
             )
         elif selected_lookback == "5 years":
-            extracted_data = pd.read_csv(
-                f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=260
-            )
+            extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
+            extracted_data = extracted_data.head(260)
             line_fig = px.line(
-                title=f"The {selected_ratio} for the {selected_asset} over the past {selected_lookback}.",
+                title=f"The {selected_ratio} for {selected_asset} over the past {selected_lookback}.",
                 template="plotly_white",
                 x=extracted_data["Date"],
                 y=(
@@ -711,9 +730,9 @@ def ratio_graph(selected_asset, selected_ratio, selected_lookback):
                 labels={"y": "Percentage", "x": "Dates"},
             )
         elif selected_lookback == "Max":
-            extracted_data = pd.read_csv(f"CSV_FILES/CFTC_{selected_asset}.csv")
+            extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
             line_fig = px.line(
-                title=f"The {selected_ratio} for the {selected_asset} over the past {selected_lookback}.",
+                title=f"The {selected_ratio} for {selected_asset} over the past {selected_lookback}.",
                 template="plotly_white",
                 x=extracted_data["Date"],
                 y=(
@@ -725,11 +744,10 @@ def ratio_graph(selected_asset, selected_ratio, selected_lookback):
             )
     if selected_ratio == "Noncommercial percentage of total open interest":
         if selected_lookback == "6 months":
-            extracted_data = pd.read_csv(
-                f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=26
-            )
+            extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
+            extracted_data = extracted_data.head(26)
             line_fig = px.line(
-                title=f"The {selected_ratio} for the {selected_asset} over the past {selected_lookback}.",
+                title=f"The {selected_ratio} for {selected_asset} over the past {selected_lookback}.",
                 template="plotly_white",
                 x=extracted_data["Date"],
                 y=(
@@ -740,11 +758,10 @@ def ratio_graph(selected_asset, selected_ratio, selected_lookback):
                 labels={"y": "Percentage", "x": "Dates"},
             )
         elif selected_lookback == "1 year":
-            extracted_data = pd.read_csv(
-                f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=52
-            )
+            extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
+            extracted_data = extracted_data.head(52)
             line_fig = px.line(
-                title=f"The {selected_ratio} for the {selected_asset} over the past {selected_lookback}.",
+                title=f"The {selected_ratio} for {selected_asset} over the past year.",
                 template="plotly_white",
                 x=extracted_data["Date"],
                 y=(
@@ -755,11 +772,10 @@ def ratio_graph(selected_asset, selected_ratio, selected_lookback):
                 labels={"y": "Percentage", "x": "Dates"},
             )
         elif selected_lookback == "3 years":
-            extracted_data = pd.read_csv(
-                f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=156
-            )
+            extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
+            extracted_data = extracted_data.head(156)
             line_fig = px.line(
-                title=f"The {selected_ratio} for the {selected_asset} over the past {selected_lookback}.",
+                title=f"The {selected_ratio} for {selected_asset} over the past {selected_lookback}.",
                 template="plotly_white",
                 x=extracted_data["Date"],
                 y=(
@@ -770,11 +786,10 @@ def ratio_graph(selected_asset, selected_ratio, selected_lookback):
                 labels={"y": "Percentage", "x": "Dates"},
             )
         elif selected_lookback == "5 years":
-            extracted_data = pd.read_csv(
-                f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=260
-            )
+            extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
+            extracted_data = extracted_data.head(260)
             line_fig = px.line(
-                title=f"The {selected_ratio} for the {selected_asset} over the past {selected_lookback}.",
+                title=f"The {selected_ratio} for {selected_asset} over the past {selected_lookback}.",
                 template="plotly_white",
                 x=extracted_data["Date"],
                 y=(
@@ -785,9 +800,9 @@ def ratio_graph(selected_asset, selected_ratio, selected_lookback):
                 labels={"y": "Percentage", "x": "Dates"},
             )
         elif selected_lookback == "Max":
-            extracted_data = pd.read_csv(f"CSV_FILES/CFTC_{selected_asset}.csv")
+            extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
             line_fig = px.line(
-                title=f"The {selected_ratio} for the {selected_asset} over the past {selected_lookback}.",
+                title=f"The {selected_ratio} for {selected_asset} over the past {selected_lookback}.",
                 template="plotly_white",
                 x=extracted_data["Date"],
                 y=(
@@ -799,11 +814,10 @@ def ratio_graph(selected_asset, selected_ratio, selected_lookback):
             )
     if selected_ratio == "Short percentage of commercial open interest":
         if selected_lookback == "6 months":
-            extracted_data = pd.read_csv(
-                f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=26
-            )
+            extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
+            extracted_data = extracted_data.head(26)
             line_fig = px.line(
-                title=f"The {selected_ratio} for the {selected_asset} over the past {selected_lookback}.",
+                title=f"The {selected_ratio} for {selected_asset} over the past {selected_lookback}.",
                 template="plotly_white",
                 x=extracted_data["Date"],
                 y=(
@@ -819,11 +833,10 @@ def ratio_graph(selected_asset, selected_ratio, selected_lookback):
                 labels={"y": "Percentage", "x": "Dates"},
             )
         elif selected_lookback == "1 year":
-            extracted_data = pd.read_csv(
-                f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=52
-            )
+            extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
+            extracted_data = extracted_data.head(52)
             line_fig = px.line(
-                title=f"The {selected_ratio} for the {selected_asset} over the past {selected_lookback}.",
+                title=f"The {selected_ratio} for {selected_asset} over the past year.",
                 template="plotly_white",
                 x=extracted_data["Date"],
                 y=(
@@ -839,11 +852,10 @@ def ratio_graph(selected_asset, selected_ratio, selected_lookback):
                 labels={"y": "Percentage", "x": "Dates"},
             )
         elif selected_lookback == "3 years":
-            extracted_data = pd.read_csv(
-                f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=156
-            )
+            extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
+            extracted_data = extracted_data.head(156)
             line_fig = px.line(
-                title=f"The {selected_ratio} for the {selected_asset} over the past {selected_lookback}.",
+                title=f"The {selected_ratio} for {selected_asset} over the past {selected_lookback}.",
                 template="plotly_white",
                 x=extracted_data["Date"],
                 y=(
@@ -859,11 +871,10 @@ def ratio_graph(selected_asset, selected_ratio, selected_lookback):
                 labels={"y": "Percentage", "x": "Dates"},
             )
         elif selected_lookback == "5 years":
-            extracted_data = pd.read_csv(
-                f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=260
-            )
+            extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
+            extracted_data = extracted_data.head(260)
             line_fig = px.line(
-                title=f"The {selected_ratio} for the {selected_asset} over the past {selected_lookback}.",
+                title=f"The {selected_ratio} for {selected_asset} over the past {selected_lookback}.",
                 template="plotly_white",
                 x=extracted_data["Date"],
                 y=(
@@ -879,9 +890,9 @@ def ratio_graph(selected_asset, selected_ratio, selected_lookback):
                 labels={"y": "Percentage", "x": "Dates"},
             )
         elif selected_lookback == "Max":
-            extracted_data = pd.read_csv(f"CSV_FILES/CFTC_{selected_asset}.csv")
+            extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
             line_fig = px.line(
-                title=f"The {selected_ratio} for the {selected_asset} over the past {selected_lookback}.",
+                title=f"The {selected_ratio} for {selected_asset} over the past {selected_lookback}.",
                 template="plotly_white",
                 x=extracted_data["Date"],
                 y=(
@@ -898,11 +909,10 @@ def ratio_graph(selected_asset, selected_ratio, selected_lookback):
             )
     if selected_ratio == "Short percentage of noncommercial open interest":
         if selected_lookback == "6 months":
-            extracted_data = pd.read_csv(
-                f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=26
-            )
+            extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
+            extracted_data = extracted_data.head(26)
             line_fig = px.line(
-                title=f"The {selected_ratio} for the {selected_asset} over the past {selected_lookback}.",
+                title=f"The {selected_ratio} for {selected_asset} over the past {selected_lookback}.",
                 template="plotly_white",
                 x=extracted_data["Date"],
                 y=(
@@ -918,11 +928,10 @@ def ratio_graph(selected_asset, selected_ratio, selected_lookback):
                 labels={"y": "Percentage", "x": "Dates"},
             )
         elif selected_lookback == "1 year":
-            extracted_data = pd.read_csv(
-                f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=52
-            )
+            extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
+            extracted_data = extracted_data.head(52)
             line_fig = px.line(
-                title=f"The {selected_ratio} for the {selected_asset} over the past {selected_lookback}.",
+                title=f"The {selected_ratio} for {selected_asset} over the past year.",
                 template="plotly_white",
                 x=extracted_data["Date"],
                 y=(
@@ -938,11 +947,10 @@ def ratio_graph(selected_asset, selected_ratio, selected_lookback):
                 labels={"y": "Percentage", "x": "Dates"},
             )
         elif selected_lookback == "3 years":
-            extracted_data = pd.read_csv(
-                f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=156
-            )
+            extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
+            extracted_data = extracted_data.head(156)
             line_fig = px.line(
-                title=f"The {selected_ratio} for the {selected_asset} over the past {selected_lookback}.",
+                title=f"The {selected_ratio} for {selected_asset} over the past {selected_lookback}.",
                 template="plotly_white",
                 x=extracted_data["Date"],
                 y=(
@@ -958,11 +966,10 @@ def ratio_graph(selected_asset, selected_ratio, selected_lookback):
                 labels={"y": "Percentage", "x": "Dates"},
             )
         elif selected_lookback == "5 years":
-            extracted_data = pd.read_csv(
-                f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=260
-            )
+            extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
+            extracted_data = extracted_data.head(260)
             line_fig = px.line(
-                title=f"The {selected_ratio} for the {selected_asset} over the past {selected_lookback}.",
+                title=f"The {selected_ratio} for {selected_asset} over the past {selected_lookback}.",
                 template="plotly_white",
                 x=extracted_data["Date"],
                 y=(
@@ -978,9 +985,9 @@ def ratio_graph(selected_asset, selected_ratio, selected_lookback):
                 labels={"y": "Percentage", "x": "Dates"},
             )
         elif selected_lookback == "Max":
-            extracted_data = pd.read_csv(f"CSV_FILES/CFTC_{selected_asset}.csv")
+            extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
             line_fig = px.line(
-                title=f"The {selected_ratio} for the {selected_asset} over the past {selected_lookback}.",
+                title=f"The {selected_ratio} for {selected_asset} over the past {selected_lookback}.",
                 template="plotly_white",
                 x=extracted_data["Date"],
                 y=(
@@ -997,11 +1004,10 @@ def ratio_graph(selected_asset, selected_ratio, selected_lookback):
             )
     if selected_ratio == "Long percentage of commercial open interest":
         if selected_lookback == "6 months":
-            extracted_data = pd.read_csv(
-                f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=26
-            )
+            extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
+            extracted_data = extracted_data.head(26)
             line_fig = px.line(
-                title=f"The {selected_ratio} for the {selected_asset} over the past {selected_lookback}.",
+                title=f"The {selected_ratio} for {selected_asset} over the past {selected_lookback}.",
                 template="plotly_white",
                 x=extracted_data["Date"],
                 y=(
@@ -1017,11 +1023,10 @@ def ratio_graph(selected_asset, selected_ratio, selected_lookback):
                 labels={"y": "Percentage", "x": "Dates"},
             )
         elif selected_lookback == "1 year":
-            extracted_data = pd.read_csv(
-                f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=52
-            )
+            extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
+            extracted_data = extracted_data.head(52)
             line_fig = px.line(
-                title=f"The {selected_ratio} for the {selected_asset} over the past {selected_lookback}.",
+                title=f"The {selected_ratio} for {selected_asset} over the past year.",
                 template="plotly_white",
                 x=extracted_data["Date"],
                 y=(
@@ -1037,11 +1042,10 @@ def ratio_graph(selected_asset, selected_ratio, selected_lookback):
                 labels={"y": "Percentage", "x": "Dates"},
             )
         elif selected_lookback == "3 years":
-            extracted_data = pd.read_csv(
-                f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=156
-            )
+            extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
+            extracted_data = extracted_data.head(156)
             line_fig = px.line(
-                title=f"The {selected_ratio} for the {selected_asset} over the past {selected_lookback}.",
+                title=f"The {selected_ratio} for {selected_asset} over the past {selected_lookback}.",
                 template="plotly_white",
                 x=extracted_data["Date"],
                 y=(
@@ -1057,11 +1061,10 @@ def ratio_graph(selected_asset, selected_ratio, selected_lookback):
                 labels={"y": "Percentage", "x": "Dates"},
             )
         elif selected_lookback == "5 years":
-            extracted_data = pd.read_csv(
-                f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=260
-            )
+            extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
+            extracted_data = extracted_data.head(260)
             line_fig = px.line(
-                title=f"The {selected_ratio} for the {selected_asset} over the past {selected_lookback}.",
+                title=f"The {selected_ratio} for {selected_asset} over the past {selected_lookback}.",
                 template="plotly_white",
                 x=extracted_data["Date"],
                 y=(
@@ -1077,9 +1080,9 @@ def ratio_graph(selected_asset, selected_ratio, selected_lookback):
                 labels={"y": "Percentage", "x": "Dates"},
             )
         elif selected_lookback == "Max":
-            extracted_data = pd.read_csv(f"CSV_FILES/CFTC_{selected_asset}.csv")
+            extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
             line_fig = px.line(
-                title=f"The {selected_ratio} for the {selected_asset} over the past {selected_lookback}.",
+                title=f"The {selected_ratio} for {selected_asset} over the past {selected_lookback}.",
                 template="plotly_white",
                 x=extracted_data["Date"],
                 y=(
@@ -1096,11 +1099,10 @@ def ratio_graph(selected_asset, selected_ratio, selected_lookback):
             )
     if selected_ratio == "Long percentage of noncommercial open interest":
         if selected_lookback == "6 months":
-            extracted_data = pd.read_csv(
-                f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=26
-            )
+            extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
+            extracted_data = extracted_data.head(26)
             line_fig = px.line(
-                title=f"The {selected_ratio} for the {selected_asset} over the past {selected_lookback}.",
+                title=f"The {selected_ratio} for {selected_asset} over the past {selected_lookback}.",
                 template="plotly_white",
                 x=extracted_data["Date"],
                 y=(
@@ -1116,11 +1118,10 @@ def ratio_graph(selected_asset, selected_ratio, selected_lookback):
                 labels={"y": "Percentage", "x": "Dates"},
             )
         elif selected_lookback == "1 year":
-            extracted_data = pd.read_csv(
-                f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=52
-            )
+            extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
+            extracted_data = extracted_data.head(52)
             line_fig = px.line(
-                title=f"The {selected_ratio} for the {selected_asset} over the past {selected_lookback}.",
+                title=f"The {selected_ratio} for {selected_asset} over the past year.",
                 template="plotly_white",
                 x=extracted_data["Date"],
                 y=(
@@ -1136,11 +1137,10 @@ def ratio_graph(selected_asset, selected_ratio, selected_lookback):
                 labels={"y": "Percentage", "x": "Dates"},
             )
         elif selected_lookback == "3 years":
-            extracted_data = pd.read_csv(
-                f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=156
-            )
+            extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
+            extracted_data = extracted_data.head(156)
             line_fig = px.line(
-                title=f"The {selected_ratio} for the {selected_asset} over the past {selected_lookback}.",
+                title=f"The {selected_ratio} for {selected_asset} over the past {selected_lookback}.",
                 template="plotly_white",
                 x=extracted_data["Date"],
                 y=(
@@ -1156,11 +1156,10 @@ def ratio_graph(selected_asset, selected_ratio, selected_lookback):
                 labels={"y": "Percentage", "x": "Dates"},
             )
         elif selected_lookback == "5 years":
-            extracted_data = pd.read_csv(
-                f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=260
-            )
+            extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
+            extracted_data = extracted_data.head(260)
             line_fig = px.line(
-                title=f"The {selected_ratio} for the {selected_asset} over the past {selected_lookback}.",
+                title=f"The {selected_ratio} for {selected_asset} over the past {selected_lookback}.",
                 template="plotly_white",
                 x=extracted_data["Date"],
                 y=(
@@ -1176,9 +1175,9 @@ def ratio_graph(selected_asset, selected_ratio, selected_lookback):
                 labels={"y": "Percentage", "x": "Dates"},
             )
         elif selected_lookback == "Max":
-            extracted_data = pd.read_csv(f"CSV_FILES/CFTC_{selected_asset}.csv")
+            extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
             line_fig = px.line(
-                title=f"The {selected_ratio} for the {selected_asset} over the past {selected_lookback}.",
+                title=f"The {selected_ratio} for {selected_asset} over the past {selected_lookback}.",
                 template="plotly_white",
                 x=extracted_data["Date"],
                 y=(
