@@ -13,7 +13,6 @@ app = dash.Dash(
     ],
 )
 
-
 data_options = [
     "Open Interest",
     "Noncommercial Long",
@@ -46,10 +45,10 @@ asset_options = [
 ]
 
 look_back_options = [
-    "6 Months",
-    "1 Year",
-    "3 Years",
-    "5 Years",
+    "6 months",
+    "1 year",
+    "3 years",
+    "5 years",
     "Max",
 ]
 
@@ -110,6 +109,7 @@ def render_page_content(pathname):
     if pathname == "/":
         return [
             html.H1("CFTC Data", style={"textAlign": "center"}),
+            dcc.Graph(id="regular_data_graph"),
             dcc.Dropdown(
                 id="asset_options",
                 options=asset_options,
@@ -125,10 +125,9 @@ def render_page_content(pathname):
             dcc.Dropdown(
                 id="lookback",
                 options=look_back_options,
-                value="1 Year",
+                value="1 year",
                 className="m-1",
             ),
-            dcc.Graph(id="regular_data_graph"),
         ]
     elif pathname == "/COT-CALCULATIONS":
         return [
@@ -148,7 +147,7 @@ def render_page_content(pathname):
             dcc.Dropdown(
                 id="lookback_calc",
                 options=look_back_options,
-                value="1 Year",
+                value="1 year",
                 className="m-1",
             ),
             dcc.Graph(id="calculated_data_garph"),
@@ -171,33 +170,37 @@ def render_page_content(pathname):
     Input(component_id="lookback", component_property="value"),
 )
 def standard_graph_update(selected_asset, selected_data, selected_lookback):
-    if selected_lookback == "6 Months":
+    if selected_lookback == "6 months":
         extracted_data = pd.read_csv(f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=26)
         line_fig = px.line(
+            title=f"The {selected_data} for the {selected_asset} over the past {selected_lookback}.",
             template="plotly_white",
             x=extracted_data["Date"],
             y=extracted_data[f"{selected_data}"],
             labels={"y": f"{selected_data} {selected_asset}", "x": "Dates"},
         )
-    elif selected_lookback == "1 Year":
+    elif selected_lookback == "1 year":
         extracted_data = pd.read_csv(f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=52)
         line_fig = px.line(
+            title=f"The {selected_data} for the {selected_asset} over the past year.",
             template="plotly_white",
             x=extracted_data["Date"],
             y=extracted_data[f"{selected_data}"],
             labels={"y": f"{selected_data} {selected_asset}", "x": "Dates"},
         )
-    elif selected_lookback == "3 Years":
+    elif selected_lookback == "3 years":
         extracted_data = pd.read_csv(f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=156)
         line_fig = px.line(
+            title=f"The {selected_data} for the {selected_asset} over the past {selected_lookback}.",
             template="plotly_white",
             x=extracted_data["Date"],
             y=extracted_data[f"{selected_data}"],
             labels={"y": f"{selected_data} {selected_asset}", "x": "Dates"},
         )
-    elif selected_lookback == "5 Years":
+    elif selected_lookback == "5 years":
         extracted_data = pd.read_csv(f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=260)
         line_fig = px.line(
+            title=f"The {selected_data} for the {selected_asset} over the past {selected_lookback}.",
             template="plotly_white",
             x=extracted_data["Date"],
             y=extracted_data[f"{selected_data}"],
@@ -206,6 +209,7 @@ def standard_graph_update(selected_asset, selected_data, selected_lookback):
     elif selected_lookback == "Max":
         extracted_data = pd.read_csv(f"CSV_FILES/CFTC_{selected_asset}.csv")
         line_fig = px.line(
+            title=f"The {selected_data} for the {selected_asset} over the past {selected_lookback}.",
             template="plotly_white",
             x=extracted_data["Date"],
             y=extracted_data[f"{selected_data}"],
@@ -223,7 +227,7 @@ def standard_graph_update(selected_asset, selected_data, selected_lookback):
 def calculated_grap_update(selected_asset, selected_calculation, selected_lookback):
     cot_index, copy_of_cot_index, cot_movement_index = [], [], []
     if selected_calculation == "COT Index Commercial":
-        if selected_lookback == "6 Months":
+        if selected_lookback == "6 months":
             extracted_data = pd.read_csv(
                 f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=26
             )
@@ -235,7 +239,7 @@ def calculated_grap_update(selected_asset, selected_calculation, selected_lookba
                         extracted_data["Commercial Net Position"].max(),
                     )
                 )
-        elif selected_lookback == "1 Year":
+        elif selected_lookback == "1 year":
             extracted_data = pd.read_csv(
                 f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=52
             )
@@ -294,7 +298,7 @@ def calculated_grap_update(selected_asset, selected_calculation, selected_lookba
             y0=5, y1=-1, line_width=0, fillcolor="red", opacity=0.5
         ).add_hrect(y0=90, y1=101, line_width=0, fillcolor="green", opacity=0.5)
     if selected_calculation == "COT Index Noncommercial":
-        if selected_lookback == "6 Months":
+        if selected_lookback == "6 months":
             extracted_data = pd.read_csv(
                 f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=26
             )
@@ -306,7 +310,7 @@ def calculated_grap_update(selected_asset, selected_calculation, selected_lookba
                         extracted_data["Noncommercial Net Position"].max(),
                     )
                 )
-        elif selected_lookback == "1 Year":
+        elif selected_lookback == "1 year":
             extracted_data = pd.read_csv(
                 f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=52
             )
@@ -368,7 +372,7 @@ def calculated_grap_update(selected_asset, selected_calculation, selected_lookba
         line_fig = px.line(
             template="plotly_white",
         )
-        if selected_lookback == "6 Months":
+        if selected_lookback == "6 months":
             extracted_data = pd.read_csv(
                 f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=26
             )
@@ -385,7 +389,7 @@ def calculated_grap_update(selected_asset, selected_calculation, selected_lookba
                 if len(copy_of_cot_index) >= 7:
                     difference = copy_of_cot_index[-7] - copy_of_cot_index[-1]
                     cot_movement_index.append(difference)
-        elif selected_lookback == "1 Year":
+        elif selected_lookback == "1 year":
             extracted_data = pd.read_csv(
                 f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=52
             )
@@ -402,7 +406,7 @@ def calculated_grap_update(selected_asset, selected_calculation, selected_lookba
                 if len(copy_of_cot_index) >= 7:
                     difference = copy_of_cot_index[-7] - copy_of_cot_index[-1]
                     cot_movement_index.append(difference)
-        elif selected_lookback == "3 Years":
+        elif selected_lookback == "3 years":
             extracted_data = pd.read_csv(
                 f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=156
             )
@@ -419,7 +423,7 @@ def calculated_grap_update(selected_asset, selected_calculation, selected_lookba
                 if len(copy_of_cot_index) >= 7:
                     difference = copy_of_cot_index[-7] - copy_of_cot_index[-1]
                     cot_movement_index.append(difference)
-        elif selected_lookback == "5 Years":
+        elif selected_lookback == "5 years":
             extracted_data = pd.read_csv(
                 f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=260
             )
@@ -464,7 +468,7 @@ def calculated_grap_update(selected_asset, selected_calculation, selected_lookba
         line_fig = px.line(
             template="plotly_white",
         )
-        if selected_lookback == "6 Months":
+        if selected_lookback == "6 months":
             extracted_data = pd.read_csv(
                 f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=26
             )
@@ -481,7 +485,7 @@ def calculated_grap_update(selected_asset, selected_calculation, selected_lookba
                 if len(copy_of_cot_index) >= 7:
                     difference = copy_of_cot_index[-7] - copy_of_cot_index[-1]
                     cot_movement_index.append(difference)
-        elif selected_lookback == "1 Year":
+        elif selected_lookback == "1 year":
             extracted_data = pd.read_csv(
                 f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=52
             )
@@ -498,7 +502,7 @@ def calculated_grap_update(selected_asset, selected_calculation, selected_lookba
                 if len(copy_of_cot_index) >= 7:
                     difference = copy_of_cot_index[-7] - copy_of_cot_index[-1]
                     cot_movement_index.append(difference)
-        elif selected_lookback == "3 Years":
+        elif selected_lookback == "3 years":
             extracted_data = pd.read_csv(
                 f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=156
             )
@@ -515,7 +519,7 @@ def calculated_grap_update(selected_asset, selected_calculation, selected_lookba
                 if len(copy_of_cot_index) >= 7:
                     difference = copy_of_cot_index[-7] - copy_of_cot_index[-1]
                     cot_movement_index.append(difference)
-        elif selected_lookback == "5 Years":
+        elif selected_lookback == "5 years":
             extracted_data = pd.read_csv(
                 f"CSV_FILES/CFTC_{selected_asset}.csv", nrows=260
             )
