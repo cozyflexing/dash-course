@@ -116,7 +116,8 @@ sidebar = html.Div(
         ),
         dbc.Nav(
             [
-                dbc.NavLink("CFTC", href="/", active="exact"),
+                dbc.NavLink("HOME", href="/", active="exact"),
+                dbc.NavLink("CFTC", href="/CFTC", active="exact"),
                 dbc.NavLink("COT", href="/COT-CALCULATIONS", active="exact"),
                 dbc.NavLink("RATIOS", href="/RATIOS", active="exact"),
             ],
@@ -135,6 +136,10 @@ app.layout = html.Div([dcc.Location(id="url"), sidebar, content])
 @app.callback(Output("page-content", "children"), [Input("url", "pathname")])
 def render_page_content(pathname):
     if pathname == "/":
+        return [
+            html.H1("Welcome Home", style={"textAlign": "center"}),
+        ]
+    elif pathname == "/CFTC":
         return [
             html.H1("CFTC Data", style={"textAlign": "center"}),
             dcc.Graph(id="cftc_graph"),
