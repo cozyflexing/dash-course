@@ -55,6 +55,7 @@ asset_options = [
     "WTI",
     "NASDAQ",
     "SP500",
+    "DJIA",
 ]
 
 look_back_options = [
