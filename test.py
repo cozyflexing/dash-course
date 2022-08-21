@@ -1,6 +1,7 @@
+from turtle import position
 import pandas as pd
 
-extracted_data = pd.read_csv(f"CSV_FILES/CFTC_USD.csv", nrows=1)
+extracted_data = pd.read_csv(f"data/CFTC_USD.csv", nrows=1)
 
 noncommercial_percentage_of_total_oi = (
     extracted_data["Noncommercial Net Position"] / extracted_data["Open Interest"]
@@ -123,9 +124,6 @@ ratio_options = [
 ]
 
 
-# Declare server for Heroku deployment. Needed for Procfile.
-server = app.server
-
 # styling the sidebar
 SIDEBAR_STYLE = {
     "position": "fixed",
@@ -143,6 +141,12 @@ CONTENT_STYLE = {
     "margin-right": "2rem",
     "padding": "2rem 1rem",
 }
+
+content = html.Div(
+    id="page-content",
+    children=[],
+    style=CONTENT_STYLE,
+)
 
 sidebar = html.Div(
     [
@@ -167,9 +171,15 @@ sidebar = html.Div(
     style=SIDEBAR_STYLE,
 )
 
-content = html.Div(id="page-content", children=[], style=CONTENT_STYLE)
 
-app.layout = html.Div([dcc.Location(id="url"), sidebar, content])
+app.layout = html.Div(
+    children=[
+        dcc.Location(id="url"),
+        html.Div(children=sidebar, className="testgriditem"),
+        html.Div(children=content, className="testgriditem"),
+    ],
+    className="testgrid",
+)
 
 
 @app.callback(Output("page-content", "children"), [Input("url", "pathname")])
@@ -177,70 +187,110 @@ def render_page_content(pathname):
     if pathname == "/":
         return [
             html.H1("CFTC Data", style={"textAlign": "center"}),
-            dcc.Graph(id="cftc_graph"),
-            dcc.Dropdown(
-                id="asset_options",
-                options=asset_options,
-                value="NASDAQ",
-                className="m-1",
-            ),
-            dcc.Dropdown(
-                id="data_options",
-                options=data_options,
-                value="Open Interest",
-                className="m-1",
-            ),
-            dcc.Dropdown(
-                id="lookback",
-                options=look_back_options,
-                value="1 year",
-                className="m-1",
+            html.Div(
+                className="chartgrid",
+                children=[
+                    html.Div(className="griditem", id="avergae_cftc"),
+                    html.Div(className="griditem", id="previous_cftc"),
+                    html.Div(className="griditem", id="current_cftc"),
+                    html.Div(className="griditem", id="change_cftc"),
+                    html.Div(
+                        className="griditem grid-col-span-4",
+                        children=[
+                            dcc.Graph(id="cftc_graph"),
+                            dcc.Dropdown(
+                                id="asset_options",
+                                options=asset_options,
+                                value="NASDAQ",
+                                className="m-1",
+                            ),
+                            dcc.Dropdown(
+                                id="data_options",
+                                options=data_options,
+                                value="Open Interest",
+                                className="m-1",
+                            ),
+                            dcc.Dropdown(
+                                id="lookback",
+                                options=look_back_options,
+                                value="1 year",
+                                className="m-1",
+                            ),
+                        ],
+                    ),
+                ],
             ),
         ]
     elif pathname == "/COT-CALCULATIONS":
         return [
             html.H1("COT Calculations", style={"textAlign": "center"}),
-            dcc.Graph(id="cot_graph"),
-            dcc.Dropdown(
-                id="asset_options_cot",
-                options=asset_options,
-                value="NASDAQ",
-                className="m-1",
-            ),
-            dcc.Dropdown(
-                id="cot_options",
-                options=calc_options,
-                value="Commercial COT Index",
-                className="m-1",
-            ),
-            dcc.Dropdown(
-                id="lookback_cot",
-                options=look_back_options,
-                value="1 year",
-                className="m-1",
+            html.Div(
+                className="chartgrid",
+                children=[
+                    html.Div(className="griditem", children=["Average"]),
+                    html.Div(className="griditem", children=["Previous"]),
+                    html.Div(className="griditem", children=["Current"]),
+                    html.Div(
+                        className="griditem grid-col-span-3",
+                        children=[
+                            dcc.Graph(id="cot_graph"),
+                            dcc.Dropdown(
+                                id="asset_options_cot",
+                                options=asset_options,
+                                value="NASDAQ",
+                                className="m-1",
+                            ),
+                            dcc.Dropdown(
+                                id="cot_options",
+                                options=calc_options,
+                                value="Commercial COT Index",
+                                className="m-1",
+                            ),
+                            dcc.Dropdown(
+                                id="lookback_cot",
+                                options=look_back_options,
+                                value="1 year",
+                                className="m-1",
+                            ),
+                        ],
+                    ),
+                ],
             ),
         ]
     elif pathname == "/RATIOS":
         return [
             html.H1("RATIOS", style={"textAlign": "center"}),
-            dcc.Graph(id="ratio_garph"),
-            dcc.Dropdown(
-                id="asset_options_ratio",
-                options=asset_options,
-                value="NASDAQ",
-                className="m-1",
-            ),
-            dcc.Dropdown(
-                id="ratio_options",
-                options=ratio_options,
-                value="Commercial percentage of total open interest",
-                className="m-1",
-            ),
-            dcc.Dropdown(
-                id="lookback_ratio",
-                options=look_back_options,
-                value="1 year",
-                className="m-1",
+            html.Div(
+                className="chartgrid",
+                children=[
+                    html.Div(className="griditem", children=["Average"]),
+                    html.Div(className="griditem", children=["Previous"]),
+                    html.Div(className="griditem", children=["Current"]),
+                    html.Div(
+                        className="griditem grid-col-span-3",
+                        children=[
+                            dcc.Graph(id="ratio_garph"),
+                            dcc.Dropdown(
+                                id="asset_options_ratio",
+                                options=asset_options,
+                                value="NASDAQ",
+                                className="m-1",
+                            ),
+                            dcc.Dropdown(
+                                id="ratio_options",
+                                options=ratio_options,
+                                value="Commercial percentage of total open interest",
+                                className="m-1",
+                            ),
+                            dcc.Dropdown(
+                                id="lookback_ratio",
+                                options=look_back_options,
+                                value="1 year",
+                                className="m-1",
+                            ),
+                        ],
+                    ),
+                ],
             ),
         ]
 
@@ -256,6 +306,10 @@ def render_page_content(pathname):
 
 @app.callback(
     Output(component_id="cftc_graph", component_property="figure"),
+    Output(component_id="avergae_cftc", component_property="children"),
+    Output(component_id="previous_cftc", component_property="children"),
+    Output(component_id="current_cftc", component_property="children"),
+    Output(component_id="change_cftc", component_property="children"),
     Input(component_id="asset_options", component_property="value"),
     Input(component_id="data_options", component_property="value"),
     Input(component_id="lookback", component_property="value"),
@@ -305,7 +359,11 @@ def cftc_graph(selected_asset, selected_data, selected_lookback):
             y=extracted_data[f"{selected_data}"],
             labels={"y": f"{selected_data} {selected_asset}", "x": "Dates"},
         )
-    return line_fig
+    avergae_cftc = f"The average {selected_data.lower()}: {int(extracted_data[f'{selected_data}'].mean())}"
+    previous_cftc = f"The previous {selected_data.lower()}: {int(extracted_data[f'{selected_data}'][1])}"
+    current_cftc = f"The current {selected_data.lower()}: {int(extracted_data[f'{selected_data}'][0])}"
+    change_cftc = f"The change in {selected_data}: {extracted_data[f'{selected_data}'][0]-extracted_data[f'{selected_data}'][1]}"
+    return line_fig, avergae_cftc, previous_cftc, current_cftc, change_cftc
 
 
 @app.callback(

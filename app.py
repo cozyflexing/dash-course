@@ -1,6 +1,6 @@
 import dash_bootstrap_components as dbc
-from dash.dependencies import Input, Output
 from dash import dcc, dash, html
+from dash.dependencies import Input, Output
 import plotly.express as px
 import pandas as pd
 import data_calculations as dcalc
@@ -8,7 +8,7 @@ import pathlib
 
 app = dash.Dash(
     __name__,
-    title="sixteenanalytics",
+    title="gridtesting",
     external_stylesheets=[
         dbc.themes.BOOTSTRAP,
     ],
@@ -55,7 +55,6 @@ asset_options = [
     "WTI",
     "NASDAQ",
     "SP500",
-    "DJIA",
 ]
 
 look_back_options = [
@@ -81,7 +80,6 @@ ratio_options = [
     "Long percentage of commercial open interest",
     "Long percentage of noncommercial open interest",
 ]
-
 
 # Declare server for Heroku deployment. Needed for Procfile.
 server = app.server
@@ -116,8 +114,7 @@ sidebar = html.Div(
         ),
         dbc.Nav(
             [
-                dbc.NavLink("HOME", href="/", active="exact"),
-                dbc.NavLink("CFTC", href="/CFTC", active="exact"),
+                dbc.NavLink("CFTC", href="/", active="exact"),
                 dbc.NavLink("COT", href="/COT-CALCULATIONS", active="exact"),
                 dbc.NavLink("RATIOS", href="/RATIOS", active="exact"),
             ],
@@ -128,84 +125,123 @@ sidebar = html.Div(
     style=SIDEBAR_STYLE,
 )
 
-content = html.Div(id="page-content", children=[], style=CONTENT_STYLE)
+content = html.Div(
+    id="page-content",
+    children=[],
+    style=CONTENT_STYLE,
+)
 
-app.layout = html.Div([dcc.Location(id="url"), sidebar, content])
+app.layout = html.Div(children=[dcc.Location(id="url"), sidebar, content])
 
 
 @app.callback(Output("page-content", "children"), [Input("url", "pathname")])
 def render_page_content(pathname):
     if pathname == "/":
         return [
-            html.H1("Welcome Home", style={"textAlign": "center"}),
-        ]
-    elif pathname == "/CFTC":
-        return [
             html.H1("CFTC Data", style={"textAlign": "center"}),
-            dcc.Graph(id="cftc_graph"),
-            dcc.Dropdown(
-                id="asset_options",
-                options=asset_options,
-                value="NASDAQ",
-                className="m-1",
-            ),
-            dcc.Dropdown(
-                id="data_options",
-                options=data_options,
-                value="Open Interest",
-                className="m-1",
-            ),
-            dcc.Dropdown(
-                id="lookback",
-                options=look_back_options,
-                value="1 year",
-                className="m-1",
+            html.Div(
+                className="chartgrid",
+                children=[
+                    html.Div(className="griditem", children=["Average"]),
+                    html.Div(className="griditem", children=["Previous"]),
+                    html.Div(className="griditem", children=["Current"]),
+                    html.Div(
+                        className="griditem grid-col-span-3",
+                        children=[
+                            dcc.Graph(id="cftc_graph"),
+                            dcc.Dropdown(
+                                id="asset_options",
+                                options=asset_options,
+                                value="NASDAQ",
+                                className="m-1",
+                            ),
+                            dcc.Dropdown(
+                                id="data_options",
+                                options=data_options,
+                                value="Open Interest",
+                                className="m-1",
+                            ),
+                            dcc.Dropdown(
+                                id="lookback",
+                                options=look_back_options,
+                                value="1 year",
+                                className="m-1",
+                            ),
+                        ],
+                    ),
+                ],
             ),
         ]
     elif pathname == "/COT-CALCULATIONS":
         return [
             html.H1("COT Calculations", style={"textAlign": "center"}),
-            dcc.Graph(id="cot_graph"),
-            dcc.Dropdown(
-                id="asset_options_cot",
-                options=asset_options,
-                value="NASDAQ",
-                className="m-1",
-            ),
-            dcc.Dropdown(
-                id="cot_options",
-                options=calc_options,
-                value="Commercial COT Index",
-                className="m-1",
-            ),
-            dcc.Dropdown(
-                id="lookback_cot",
-                options=look_back_options,
-                value="1 year",
-                className="m-1",
+            html.Div(
+                className="chartgrid",
+                children=[
+                    html.Div(className="griditem", children=["Average"]),
+                    html.Div(className="griditem", children=["Previous"]),
+                    html.Div(className="griditem", children=["Current"]),
+                    html.Div(
+                        className="griditem grid-col-span-3",
+                        children=[
+                            dcc.Graph(id="cot_graph"),
+                            dcc.Dropdown(
+                                id="asset_options_cot",
+                                options=asset_options,
+                                value="NASDAQ",
+                                className="m-1",
+                            ),
+                            dcc.Dropdown(
+                                id="cot_options",
+                                options=calc_options,
+                                value="Commercial COT Index",
+                                className="m-1",
+                            ),
+                            dcc.Dropdown(
+                                id="lookback_cot",
+                                options=look_back_options,
+                                value="1 year",
+                                className="m-1",
+                            ),
+                        ],
+                    ),
+                ],
             ),
         ]
     elif pathname == "/RATIOS":
         return [
             html.H1("RATIOS", style={"textAlign": "center"}),
-            dcc.Graph(id="ratio_garph"),
-            dcc.Dropdown(
-                id="asset_options_ratio",
-                options=asset_options,
-                value="NASDAQ",
-                className="m-1",
-            ),
-            dcc.Dropdown(
-                id="ratio_options",
-                options=ratio_options,
-                value="Commercial percentage of total open interest",
-                className="m-1",
-            ),
-            dcc.Dropdown(
-                id="lookback_ratio",
-                options=look_back_options,
-                value="1 year",
-                className="m-1",
+            html.Div(
+                className="chartgrid",
+                children=[
+                    html.Div(className="griditem", children=["Average"]),
+                    html.Div(className="griditem", children=["Previous"]),
+                    html.Div(className="griditem", children=["Current"]),
+                    html.Div(
+                        className="griditem grid-col-span-3",
+                        children=[
+                            dcc.Graph(id="ratio_garph"),
+                            dcc.Dropdown(
+                                id="asset_options_ratio",
+                                options=asset_options,
+                                value="NASDAQ",
+                                className="m-1",
+                            ),
+                            dcc.Dropdown(
+                                id="ratio_options",
+                                options=ratio_options,
+                                value="Commercial percentage of total open interest",
+                                className="m-1",
+                            ),
+                            dcc.Dropdown(
+                                id="lookback_ratio",
+                                options=look_back_options,
+                                value="1 year",
+                                className="m-1",
+                            ),
+                        ],
+                    ),
+                ],
             ),
         ]
 
