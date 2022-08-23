@@ -834,6 +834,20 @@ def ratio_graph(selected_asset, selected_ratio, selected_lookback):
                 * 100,
                 labels={"y": "Percentage", "x": "Dates"},
             )
+
+        needed_data = (
+            extracted_data["Commercial Net Position"] / extracted_data["Open Interest"]
+        ) * 100
+        avergae_ratio = (
+            f"The average {selected_ratio.lower()}: {round(needed_data.mean(),2)}"
+        )
+        previous_ratio = (
+            f"The previous {selected_ratio.lower()}: {round(needed_data[1],2)}"
+        )
+        current_ratio = (
+            f"The current {selected_ratio.lower()}: {round(needed_data[0],2)}"
+        )
+        change_ratio = f"The change in {selected_ratio.lower()}: {round(needed_data[0] - needed_data[1],2)}"
     if selected_ratio == "Noncommercial percentage of total open interest":
         if selected_lookback == "6 months":
             extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
@@ -904,6 +918,20 @@ def ratio_graph(selected_asset, selected_ratio, selected_lookback):
                 * 100,
                 labels={"y": "Percentage", "x": "Dates"},
             )
+        needed_data = (
+            extracted_data["Noncommercial Net Position"]
+            / extracted_data["Open Interest"]
+        ) * 100
+        avergae_ratio = (
+            f"The average {selected_ratio.lower()}: {round(needed_data.mean(),2)}"
+        )
+        previous_ratio = (
+            f"The previous {selected_ratio.lower()}: {round(needed_data[1],2)}"
+        )
+        current_ratio = (
+            f"The current {selected_ratio.lower()}: {round(needed_data[0],2)}"
+        )
+        change_ratio = f"The change in {selected_ratio.lower()}: {round(needed_data[0] - needed_data[1],2)}"
     if selected_ratio == "Short percentage of commercial open interest":
         if selected_lookback == "6 months":
             extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
@@ -999,6 +1027,20 @@ def ratio_graph(selected_asset, selected_ratio, selected_lookback):
                 ),
                 labels={"y": "Percentage", "x": "Dates"},
             )
+        needed_data = (
+            extracted_data["Commercial Short"]
+            / (extracted_data["Commercial Long"] + extracted_data["Commercial Short"])
+        ) * 100
+        avergae_ratio = (
+            f"The average {selected_ratio.lower()}: {round(needed_data.mean(),2)}"
+        )
+        previous_ratio = (
+            f"The previous {selected_ratio.lower()}: {round(needed_data[1],2)}"
+        )
+        current_ratio = (
+            f"The current {selected_ratio.lower()}: {round(needed_data[0],2)}"
+        )
+        change_ratio = f"The change in {selected_ratio.lower()}: {round(needed_data[0] - needed_data[1],2)}"
     if selected_ratio == "Short percentage of noncommercial open interest":
         if selected_lookback == "6 months":
             extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
@@ -1094,6 +1136,23 @@ def ratio_graph(selected_asset, selected_ratio, selected_lookback):
                 ),
                 labels={"y": "Percentage", "x": "Dates"},
             )
+        needed_data = (
+            extracted_data["Noncommercial Short"]
+            / (
+                extracted_data["Noncommercial Long"]
+                + extracted_data["Noncommercial Short"]
+            )
+        ) * 100
+        avergae_ratio = (
+            f"The average {selected_ratio.lower()}: {round(needed_data.mean(),2)}"
+        )
+        previous_ratio = (
+            f"The previous {selected_ratio.lower()}: {round(needed_data[1],2)}"
+        )
+        current_ratio = (
+            f"The current {selected_ratio.lower()}: {round(needed_data[0],2)}"
+        )
+        change_ratio = f"The change in {selected_ratio.lower()}: {round(needed_data[0] - needed_data[1],2)}"
     if selected_ratio == "Long percentage of commercial open interest":
         if selected_lookback == "6 months":
             extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
@@ -1189,6 +1248,20 @@ def ratio_graph(selected_asset, selected_ratio, selected_lookback):
                 ),
                 labels={"y": "Percentage", "x": "Dates"},
             )
+        needed_data = (
+            extracted_data["Commercial Long"]
+            / (extracted_data["Commercial Long"] + extracted_data["Commercial Short"])
+        ) * 100
+        avergae_ratio = (
+            f"The average {selected_ratio.lower()}: {round(needed_data.mean(),2)}"
+        )
+        previous_ratio = (
+            f"The previous {selected_ratio.lower()}: {round(needed_data[1],2)}"
+        )
+        current_ratio = (
+            f"The current {selected_ratio.lower()}: {round(needed_data[0],2)}"
+        )
+        change_ratio = f"The change in {selected_ratio.lower()}: {round(needed_data[0] - needed_data[1],2)}"
     if selected_ratio == "Long percentage of noncommercial open interest":
         if selected_lookback == "6 months":
             extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
@@ -1284,8 +1357,25 @@ def ratio_graph(selected_asset, selected_ratio, selected_lookback):
                 ),
                 labels={"y": "Percentage", "x": "Dates"},
             )
+        needed_data = (
+            extracted_data["Noncommercial Long"]
+            / (
+                extracted_data["Noncommercial Long"]
+                + extracted_data["Noncommercial Short"]
+            )
+        ) * 100
+        avergae_ratio = (
+            f"The average {selected_ratio.lower()}: {round(needed_data.mean(),2)}"
+        )
+        previous_ratio = (
+            f"The previous {selected_ratio.lower()}: {round(needed_data[1],2)}"
+        )
+        current_ratio = (
+            f"The current {selected_ratio.lower()}: {round(needed_data[0],2)}"
+        )
+        change_ratio = f"The change in {selected_ratio.lower()}: {round(needed_data[0] - needed_data[1],2)}"
 
-    return line_fig
+    return line_fig, avergae_ratio, previous_ratio, current_ratio, change_ratio
 
 
 if __name__ == "__main__":
