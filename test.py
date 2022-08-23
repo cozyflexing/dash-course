@@ -227,11 +227,12 @@ def render_page_content(pathname):
             html.Div(
                 className="chartgrid",
                 children=[
-                    html.Div(className="griditem", children=["Average"]),
-                    html.Div(className="griditem", children=["Previous"]),
-                    html.Div(className="griditem", children=["Current"]),
+                    html.Div(className="griditem", id="avergae_cot"),
+                    html.Div(className="griditem", id="previous_cot"),
+                    html.Div(className="griditem", id="current_cot"),
+                    html.Div(className="griditem", id="change_cot"),
                     html.Div(
-                        className="griditem grid-col-span-3",
+                        className="griditem grid-col-span-4",
                         children=[
                             dcc.Graph(id="cot_graph"),
                             dcc.Dropdown(
@@ -263,11 +264,12 @@ def render_page_content(pathname):
             html.Div(
                 className="chartgrid",
                 children=[
-                    html.Div(className="griditem", children=["Average"]),
-                    html.Div(className="griditem", children=["Previous"]),
-                    html.Div(className="griditem", children=["Current"]),
+                    html.Div(className="griditem", id="avergae_ratio"),
+                    html.Div(className="griditem", id="previous_ratio"),
+                    html.Div(className="griditem", id="current_ratio"),
+                    html.Div(className="griditem", id="change_ratio"),
                     html.Div(
-                        className="griditem grid-col-span-3",
+                        className="griditem grid-col-span-4",
                         children=[
                             dcc.Graph(id="ratio_garph"),
                             dcc.Dropdown(
@@ -362,12 +364,16 @@ def cftc_graph(selected_asset, selected_data, selected_lookback):
     avergae_cftc = f"The average {selected_data.lower()}: {int(extracted_data[f'{selected_data}'].mean())}"
     previous_cftc = f"The previous {selected_data.lower()}: {int(extracted_data[f'{selected_data}'][1])}"
     current_cftc = f"The current {selected_data.lower()}: {int(extracted_data[f'{selected_data}'][0])}"
-    change_cftc = f"The change in {selected_data}: {extracted_data[f'{selected_data}'][0]-extracted_data[f'{selected_data}'][1]}"
+    change_cftc = f"The change in {selected_data.lower()}: {int(extracted_data[f'{selected_data}'][0]-extracted_data[f'{selected_data}'][1])}"
     return line_fig, avergae_cftc, previous_cftc, current_cftc, change_cftc
 
 
 @app.callback(
     Output(component_id="cot_graph", component_property="figure"),
+    Output(component_id="avergae_cot", component_property="children"),
+    Output(component_id="previous_cot", component_property="children"),
+    Output(component_id="current_cot", component_property="children"),
+    Output(component_id="change_cot", component_property="children"),
     Input(component_id="asset_options_cot", component_property="value"),
     Input(component_id="cot_options", component_property="value"),
     Input(component_id="lookback_cot", component_property="value"),
@@ -429,6 +435,14 @@ def cot_graph(selected_asset, selected_calculation, selected_lookback):
                         extracted_data["Commercial Net Position"].max(),
                     )
                 )
+        avergae_cot = f"The average {selected_calculation.lower()}: {round(sum(cot_index) / len(cot_index))}"
+        previous_cot = (
+            f"The previous {selected_calculation.lower()}: {round(cot_index[1])}"
+        )
+        current_cot = (
+            f"The current {selected_calculation.lower()}: {round(cot_index[0])}"
+        )
+        change_cot = f"The change in {selected_calculation.lower()}: {round(cot_index[0] - cot_index[1])}"
         if selected_lookback == "1 year":
             title = (
                 f"The {selected_calculation} for {selected_asset} over the past year"
@@ -503,6 +517,14 @@ def cot_graph(selected_asset, selected_calculation, selected_lookback):
                         extracted_data["Noncommercial Net Position"].max(),
                     )
                 )
+        avergae_cot = f"The average {selected_calculation.lower()}: {round(sum(cot_index) / len(cot_index))}"
+        previous_cot = (
+            f"The previous {selected_calculation.lower()}: {round(cot_index[1])}"
+        )
+        current_cot = (
+            f"The current {selected_calculation.lower()}: {round(cot_index[0])}"
+        )
+        change_cot = f"The change in {selected_calculation.lower()}: {round(cot_index[0] - cot_index[1])}"
         if selected_lookback == "1 year":
             title = (
                 f"The {selected_calculation} for {selected_asset} over the past year"
@@ -605,6 +627,10 @@ def cot_graph(selected_asset, selected_calculation, selected_lookback):
                 if len(copy_of_cot_index) >= 7:
                     difference = copy_of_cot_index[-7] - copy_of_cot_index[-1]
                     cot_movement_index.append(difference)
+        avergae_cot = f"The average {selected_calculation.lower()}: {round(sum(cot_movement_index) / len(cot_movement_index))}"
+        previous_cot = f"The previous {selected_calculation.lower()}: {round(cot_movement_index[1])}"
+        current_cot = f"The current {selected_calculation.lower()}: {round(cot_movement_index[0])}"
+        change_cot = f"The change in {selected_calculation.lower()}: {round(cot_movement_index[0] - cot_movement_index[1])}"
         if selected_lookback == "1 year":
             title = (
                 f"The {selected_calculation} for {selected_asset} over the past year"
@@ -704,6 +730,10 @@ def cot_graph(selected_asset, selected_calculation, selected_lookback):
                 if len(copy_of_cot_index) >= 7:
                     difference = copy_of_cot_index[-7] - copy_of_cot_index[-1]
                     cot_movement_index.append(difference)
+        avergae_cot = f"The average {selected_calculation.lower()}: {round(sum(cot_movement_index) / len(cot_movement_index))}"
+        previous_cot = f"The previous {selected_calculation.lower()}: {round(cot_movement_index[1])}"
+        current_cot = f"The current {selected_calculation.lower()}: {round(cot_movement_index[0])}"
+        change_cot = f"The change in {selected_calculation.lower()}: {round(cot_movement_index[0] - cot_movement_index[1])}"
         if selected_lookback == "1 year":
             title = (
                 f"The {selected_calculation} for {selected_asset} over the past year"
@@ -720,11 +750,15 @@ def cot_graph(selected_asset, selected_calculation, selected_lookback):
                 "x": "Dates",
             },
         )
-    return line_fig
+    return line_fig, avergae_cot, previous_cot, current_cot, change_cot
 
 
 @app.callback(
     Output(component_id="ratio_garph", component_property="figure"),
+    Output(component_id="avergae_ratio", component_property="children"),
+    Output(component_id="previous_ratio", component_property="children"),
+    Output(component_id="current_ratio", component_property="children"),
+    Output(component_id="change_ratio", component_property="children"),
     Input(component_id="asset_options_ratio", component_property="value"),
     Input(component_id="ratio_options", component_property="value"),
     Input(component_id="lookback_ratio", component_property="value"),
