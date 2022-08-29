@@ -1,9 +1,6 @@
 from urllib import response
 import pandas as pd
 import requests
-import datetime
-
-now = datetime.datetime.now()
 
 api_list = {
     "NASDAQ": "https://data.nasdaq.com/api/v3/datasets/CFTC/209742_FO_L_ALL.csv?api_key=dKxFC2Wn7ckKFyatyDC3",
@@ -20,6 +17,7 @@ api_list = {
     "NZD": "https://data.nasdaq.com/api/v3/datasets/CFTC/112741_FO_L_ALL.csv?api_key=dKxFC2Wn7ckKFyatyDC3",
     "CHF": "https://data.nasdaq.com/api/v3/datasets/CFTC/092741_FO_L_ALL.csv?api_key=dKxFC2Wn7ckKFyatyDC3",
     "WTI": "https://data.nasdaq.com/api/v3/datasets/CFTC/067651_FO_L_ALL.csv?api_key=dKxFC2Wn7ckKFyatyDC3",
+    "DJIA": "https://data.nasdaq.com/api/v3/datasets/CFTC/124603_FO_L_ALL.csv?api_key=dKxFC2Wn7ckKFyatyDC3",
 }
 
 for x in api_list:
