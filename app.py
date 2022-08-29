@@ -1,6 +1,6 @@
 import dash_bootstrap_components as dbc
-from dash import dcc, dash, html
 from dash.dependencies import Input, Output
+from dash import dcc, dash, html
 import plotly.express as px
 import pandas as pd
 import data_calculations as dcalc
@@ -8,7 +8,7 @@ import pathlib
 
 app = dash.Dash(
     __name__,
-    title="gridtesting",
+    title="sixteenanalytics",
     external_stylesheets=[
         dbc.themes.BOOTSTRAP,
     ],
@@ -82,8 +82,6 @@ ratio_options = [
     "Long percentage of noncommercial open interest",
 ]
 
-# Declare server for Heroku deployment. Needed for Procfile.
-server = app.server
 
 # styling the sidebar
 SIDEBAR_STYLE = {
@@ -102,6 +100,12 @@ CONTENT_STYLE = {
     "margin-right": "2rem",
     "padding": "2rem 1rem",
 }
+
+content = html.Div(
+    id="page-content",
+    children=[],
+    style=CONTENT_STYLE,
+)
 
 sidebar = html.Div(
     [
@@ -126,13 +130,15 @@ sidebar = html.Div(
     style=SIDEBAR_STYLE,
 )
 
-content = html.Div(
-    id="page-content",
-    children=[],
-    style=CONTENT_STYLE,
-)
 
-app.layout = html.Div(children=[dcc.Location(id="url"), sidebar, content])
+app.layout = html.Div(
+    children=[
+        dcc.Location(id="url"),
+        html.Div(children=sidebar, className="testgriditem"),
+        html.Div(children=content, className="testgriditem"),
+    ],
+    className="testgrid",
+)
 
 
 @app.callback(Output("page-content", "children"), [Input("url", "pathname")])
@@ -143,9 +149,10 @@ def render_page_content(pathname):
             html.Div(
                 className="chartgrid",
                 children=[
-                    html.Div(className="griditem", children=["Average"]),
-                    html.Div(className="griditem", children=["Previous"]),
-                    html.Div(className="griditem", children=["Current"]),
+                    html.Div(className="griditem", id="avergae_cftc"),
+                    html.Div(className="griditem", id="previous_cftc"),
+                    html.Div(className="griditem", id="current_cftc"),
+                    html.Div(className="griditem", id="change_cftc"),
                     html.Div(
                         className="griditem grid-col-span-4",
                         children=[
@@ -179,11 +186,12 @@ def render_page_content(pathname):
             html.Div(
                 className="chartgrid",
                 children=[
-                    html.Div(className="griditem", children=["Average"]),
-                    html.Div(className="griditem", children=["Previous"]),
-                    html.Div(className="griditem", children=["Current"]),
+                    html.Div(className="griditem", id="avergae_cot"),
+                    html.Div(className="griditem", id="previous_cot"),
+                    html.Div(className="griditem", id="current_cot"),
+                    html.Div(className="griditem", id="change_cot"),
                     html.Div(
-                        className="griditem grid-col-span-3",
+                        className="griditem grid-col-span-4",
                         children=[
                             dcc.Graph(id="cot_graph"),
                             dcc.Dropdown(
@@ -215,11 +223,12 @@ def render_page_content(pathname):
             html.Div(
                 className="chartgrid",
                 children=[
-                    html.Div(className="griditem", children=["Average"]),
-                    html.Div(className="griditem", children=["Previous"]),
-                    html.Div(className="griditem", children=["Current"]),
+                    html.Div(className="griditem", id="avergae_ratio"),
+                    html.Div(className="griditem", id="previous_ratio"),
+                    html.Div(className="griditem", id="current_ratio"),
+                    html.Div(className="griditem", id="change_ratio"),
                     html.Div(
-                        className="griditem grid-col-span-3",
+                        className="griditem grid-col-span-4",
                         children=[
                             dcc.Graph(id="ratio_garph"),
                             dcc.Dropdown(
@@ -258,6 +267,10 @@ def render_page_content(pathname):
 
 @app.callback(
     Output(component_id="cftc_graph", component_property="figure"),
+    Output(component_id="avergae_cftc", component_property="children"),
+    Output(component_id="previous_cftc", component_property="children"),
+    Output(component_id="current_cftc", component_property="children"),
+    Output(component_id="change_cftc", component_property="children"),
     Input(component_id="asset_options", component_property="value"),
     Input(component_id="data_options", component_property="value"),
     Input(component_id="lookback", component_property="value"),
@@ -307,11 +320,19 @@ def cftc_graph(selected_asset, selected_data, selected_lookback):
             y=extracted_data[f"{selected_data}"],
             labels={"y": f"{selected_data} {selected_asset}", "x": "Dates"},
         )
-    return line_fig
+    avergae_cftc = f"The average {selected_data.lower()}: {int(extracted_data[f'{selected_data}'].mean())}"
+    previous_cftc = f"The previous {selected_data.lower()}: {int(extracted_data[f'{selected_data}'][1])}"
+    current_cftc = f"The current {selected_data.lower()}: {int(extracted_data[f'{selected_data}'][0])}"
+    change_cftc = f"The change in {selected_data.lower()}: {int(extracted_data[f'{selected_data}'][0]-extracted_data[f'{selected_data}'][1])}"
+    return line_fig, avergae_cftc, previous_cftc, current_cftc, change_cftc
 
 
 @app.callback(
     Output(component_id="cot_graph", component_property="figure"),
+    Output(component_id="avergae_cot", component_property="children"),
+    Output(component_id="previous_cot", component_property="children"),
+    Output(component_id="current_cot", component_property="children"),
+    Output(component_id="change_cot", component_property="children"),
     Input(component_id="asset_options_cot", component_property="value"),
     Input(component_id="cot_options", component_property="value"),
     Input(component_id="lookback_cot", component_property="value"),
@@ -373,6 +394,14 @@ def cot_graph(selected_asset, selected_calculation, selected_lookback):
                         extracted_data["Commercial Net Position"].max(),
                     )
                 )
+        avergae_cot = f"The average {selected_calculation.lower()}: {round(sum(cot_index) / len(cot_index))}"
+        previous_cot = (
+            f"The previous {selected_calculation.lower()}: {round(cot_index[1])}"
+        )
+        current_cot = (
+            f"The current {selected_calculation.lower()}: {round(cot_index[0])}"
+        )
+        change_cot = f"The change in {selected_calculation.lower()}: {round(cot_index[0] - cot_index[1])}"
         if selected_lookback == "1 year":
             title = (
                 f"The {selected_calculation} for {selected_asset} over the past year"
@@ -447,6 +476,14 @@ def cot_graph(selected_asset, selected_calculation, selected_lookback):
                         extracted_data["Noncommercial Net Position"].max(),
                     )
                 )
+        avergae_cot = f"The average {selected_calculation.lower()}: {round(sum(cot_index) / len(cot_index))}"
+        previous_cot = (
+            f"The previous {selected_calculation.lower()}: {round(cot_index[1])}"
+        )
+        current_cot = (
+            f"The current {selected_calculation.lower()}: {round(cot_index[0])}"
+        )
+        change_cot = f"The change in {selected_calculation.lower()}: {round(cot_index[0] - cot_index[1])}"
         if selected_lookback == "1 year":
             title = (
                 f"The {selected_calculation} for {selected_asset} over the past year"
@@ -549,6 +586,10 @@ def cot_graph(selected_asset, selected_calculation, selected_lookback):
                 if len(copy_of_cot_index) >= 7:
                     difference = copy_of_cot_index[-7] - copy_of_cot_index[-1]
                     cot_movement_index.append(difference)
+        avergae_cot = f"The average {selected_calculation.lower()}: {round(sum(cot_movement_index) / len(cot_movement_index))}"
+        previous_cot = f"The previous {selected_calculation.lower()}: {round(cot_movement_index[1])}"
+        current_cot = f"The current {selected_calculation.lower()}: {round(cot_movement_index[0])}"
+        change_cot = f"The change in {selected_calculation.lower()}: {round(cot_movement_index[0] - cot_movement_index[1])}"
         if selected_lookback == "1 year":
             title = (
                 f"The {selected_calculation} for {selected_asset} over the past year"
@@ -648,6 +689,10 @@ def cot_graph(selected_asset, selected_calculation, selected_lookback):
                 if len(copy_of_cot_index) >= 7:
                     difference = copy_of_cot_index[-7] - copy_of_cot_index[-1]
                     cot_movement_index.append(difference)
+        avergae_cot = f"The average {selected_calculation.lower()}: {round(sum(cot_movement_index) / len(cot_movement_index))}"
+        previous_cot = f"The previous {selected_calculation.lower()}: {round(cot_movement_index[1])}"
+        current_cot = f"The current {selected_calculation.lower()}: {round(cot_movement_index[0])}"
+        change_cot = f"The change in {selected_calculation.lower()}: {round(cot_movement_index[0] - cot_movement_index[1])}"
         if selected_lookback == "1 year":
             title = (
                 f"The {selected_calculation} for {selected_asset} over the past year"
@@ -664,11 +709,15 @@ def cot_graph(selected_asset, selected_calculation, selected_lookback):
                 "x": "Dates",
             },
         )
-    return line_fig
+    return line_fig, avergae_cot, previous_cot, current_cot, change_cot
 
 
 @app.callback(
     Output(component_id="ratio_garph", component_property="figure"),
+    Output(component_id="avergae_ratio", component_property="children"),
+    Output(component_id="previous_ratio", component_property="children"),
+    Output(component_id="current_ratio", component_property="children"),
+    Output(component_id="change_ratio", component_property="children"),
     Input(component_id="asset_options_ratio", component_property="value"),
     Input(component_id="ratio_options", component_property="value"),
     Input(component_id="lookback_ratio", component_property="value"),
@@ -744,6 +793,20 @@ def ratio_graph(selected_asset, selected_ratio, selected_lookback):
                 * 100,
                 labels={"y": "Percentage", "x": "Dates"},
             )
+
+        needed_data = (
+            extracted_data["Commercial Net Position"] / extracted_data["Open Interest"]
+        ) * 100
+        avergae_ratio = (
+            f"The average {selected_ratio.lower()}: {round(needed_data.mean(),2)}"
+        )
+        previous_ratio = (
+            f"The previous {selected_ratio.lower()}: {round(needed_data[1],2)}"
+        )
+        current_ratio = (
+            f"The current {selected_ratio.lower()}: {round(needed_data[0],2)}"
+        )
+        change_ratio = f"The change in {selected_ratio.lower()}: {round(needed_data[0] - needed_data[1],2)}"
     if selected_ratio == "Noncommercial percentage of total open interest":
         if selected_lookback == "6 months":
             extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
@@ -814,6 +877,20 @@ def ratio_graph(selected_asset, selected_ratio, selected_lookback):
                 * 100,
                 labels={"y": "Percentage", "x": "Dates"},
             )
+        needed_data = (
+            extracted_data["Noncommercial Net Position"]
+            / extracted_data["Open Interest"]
+        ) * 100
+        avergae_ratio = (
+            f"The average {selected_ratio.lower()}: {round(needed_data.mean(),2)}"
+        )
+        previous_ratio = (
+            f"The previous {selected_ratio.lower()}: {round(needed_data[1],2)}"
+        )
+        current_ratio = (
+            f"The current {selected_ratio.lower()}: {round(needed_data[0],2)}"
+        )
+        change_ratio = f"The change in {selected_ratio.lower()}: {round(needed_data[0] - needed_data[1],2)}"
     if selected_ratio == "Short percentage of commercial open interest":
         if selected_lookback == "6 months":
             extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
@@ -909,6 +986,20 @@ def ratio_graph(selected_asset, selected_ratio, selected_lookback):
                 ),
                 labels={"y": "Percentage", "x": "Dates"},
             )
+        needed_data = (
+            extracted_data["Commercial Short"]
+            / (extracted_data["Commercial Long"] + extracted_data["Commercial Short"])
+        ) * 100
+        avergae_ratio = (
+            f"The average {selected_ratio.lower()}: {round(needed_data.mean(),2)}"
+        )
+        previous_ratio = (
+            f"The previous {selected_ratio.lower()}: {round(needed_data[1],2)}"
+        )
+        current_ratio = (
+            f"The current {selected_ratio.lower()}: {round(needed_data[0],2)}"
+        )
+        change_ratio = f"The change in {selected_ratio.lower()}: {round(needed_data[0] - needed_data[1],2)}"
     if selected_ratio == "Short percentage of noncommercial open interest":
         if selected_lookback == "6 months":
             extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
@@ -1004,6 +1095,23 @@ def ratio_graph(selected_asset, selected_ratio, selected_lookback):
                 ),
                 labels={"y": "Percentage", "x": "Dates"},
             )
+        needed_data = (
+            extracted_data["Noncommercial Short"]
+            / (
+                extracted_data["Noncommercial Long"]
+                + extracted_data["Noncommercial Short"]
+            )
+        ) * 100
+        avergae_ratio = (
+            f"The average {selected_ratio.lower()}: {round(needed_data.mean(),2)}"
+        )
+        previous_ratio = (
+            f"The previous {selected_ratio.lower()}: {round(needed_data[1],2)}"
+        )
+        current_ratio = (
+            f"The current {selected_ratio.lower()}: {round(needed_data[0],2)}"
+        )
+        change_ratio = f"The change in {selected_ratio.lower()}: {round(needed_data[0] - needed_data[1],2)}"
     if selected_ratio == "Long percentage of commercial open interest":
         if selected_lookback == "6 months":
             extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
@@ -1099,6 +1207,20 @@ def ratio_graph(selected_asset, selected_ratio, selected_lookback):
                 ),
                 labels={"y": "Percentage", "x": "Dates"},
             )
+        needed_data = (
+            extracted_data["Commercial Long"]
+            / (extracted_data["Commercial Long"] + extracted_data["Commercial Short"])
+        ) * 100
+        avergae_ratio = (
+            f"The average {selected_ratio.lower()}: {round(needed_data.mean(),2)}"
+        )
+        previous_ratio = (
+            f"The previous {selected_ratio.lower()}: {round(needed_data[1],2)}"
+        )
+        current_ratio = (
+            f"The current {selected_ratio.lower()}: {round(needed_data[0],2)}"
+        )
+        change_ratio = f"The change in {selected_ratio.lower()}: {round(needed_data[0] - needed_data[1],2)}"
     if selected_ratio == "Long percentage of noncommercial open interest":
         if selected_lookback == "6 months":
             extracted_data = get_pandas_data(f"CFTC_{selected_asset}.csv")
@@ -1194,8 +1316,25 @@ def ratio_graph(selected_asset, selected_ratio, selected_lookback):
                 ),
                 labels={"y": "Percentage", "x": "Dates"},
             )
+        needed_data = (
+            extracted_data["Noncommercial Long"]
+            / (
+                extracted_data["Noncommercial Long"]
+                + extracted_data["Noncommercial Short"]
+            )
+        ) * 100
+        avergae_ratio = (
+            f"The average {selected_ratio.lower()}: {round(needed_data.mean(),2)}"
+        )
+        previous_ratio = (
+            f"The previous {selected_ratio.lower()}: {round(needed_data[1],2)}"
+        )
+        current_ratio = (
+            f"The current {selected_ratio.lower()}: {round(needed_data[0],2)}"
+        )
+        change_ratio = f"The change in {selected_ratio.lower()}: {round(needed_data[0] - needed_data[1],2)}"
 
-    return line_fig
+    return line_fig, avergae_ratio, previous_ratio, current_ratio, change_ratio
 
 
 if __name__ == "__main__":
