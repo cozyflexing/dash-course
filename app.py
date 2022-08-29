@@ -147,7 +147,7 @@ def render_page_content(pathname):
                     html.Div(className="griditem", children=["Previous"]),
                     html.Div(className="griditem", children=["Current"]),
                     html.Div(
-                        className="griditem grid-col-span-3",
+                        className="griditem grid-col-span-4",
                         children=[
                             dcc.Graph(id="cftc_graph"),
                             dcc.Dropdown(
