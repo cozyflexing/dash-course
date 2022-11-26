@@ -1,16 +1,9 @@
-import sqlalchemy as sa
-from sqlalchemy.schema import MetaData
-import pandas as pd
-
-
-engine = sa.create_engine("sqlite:///sqlalchemyCFTCDATA.sqlite")
-df = pd.read_sql("EUR", engine)
-df.Date = pd.to_datetime(df.Date)
-
-import dash
-from dash import dcc, html
+from dash import Dash, html, dcc, Input, Output
+from pandas import to_datetime, read_sql
 import dash_bootstrap_components as dbc
-from dash.dependencies import Input, Output, State
+from dash_bootstrap_templates import load_figure_template
+from plotly.express import line
+from listCreations import columnOptions, tableOptions, engine
 
 import plotly.express as px
 
@@ -26,14 +19,27 @@ SIDEBAR_STYLE = {
 }
 
 # the style arguments for the main content page.
-CONTENT_STYLE = {"margin-left": "25%", "margin-right": "5%", "padding": "20px 10p"}
+CONTENT_STYLE = {
+    "margin-left": "25%",
+    "margin-right": "5%",
+    "padding": "20px 10p",
+}
 
-TEXT_STYLE = {"textAlign": "center", "color": "#191970"}
+TEXT_STYLE = {
+    "textAlign": "center",
+    "color": "#191970",
+}
 
-CARD_TEXT_STYLE = {"textAlign": "center", "color": "#0074D9"}
+CARD_TEXT_STYLE = {
+    "textAlign": "center",
+    "color": "#0074D9",
+}
 
 sidebar = html.Div(
-    [html.H2("Menu", style=TEXT_STYLE), html.Hr()],
+    [
+        html.H2("Menu", style=TEXT_STYLE),
+        html.Hr(),
+    ],
     style=SIDEBAR_STYLE,
 )
 
@@ -129,30 +135,64 @@ content_second_row = dbc.Row(
 content_third_row = dbc.Row(
     [
         dbc.Col(
-            dcc.Graph(id="graph_4"),
+            children=[
+                dcc.Dropdown(
+                    options=columnOptions, value="OpenInterest", id="columnDropdown"
+                ),
+                dcc.Dropdown(options=tableOptions, value="EUR", id="tableDropdown"),
+                dcc.Graph(id="renderedGraph"),
+            ],
             md=12,
         )
     ]
 )
 
+
 content_fourth_row = dbc.Row(
-    [dbc.Col(dcc.Graph(id="graph_5"), md=6), dbc.Col(dcc.Graph(id="graph_6"), md=6)]
+    [
+        dbc.Col(dcc.Graph(id="graph_5"), md=6),
+        dbc.Col(dcc.Graph(id="graph_6"), md=6),
+    ]
 )
 
 content = html.Div(
     [
-        html.H2("Analytics Dashboard Template", style=TEXT_STYLE),
+        html.H2("Sixteen Analytics Dashboard", style=TEXT_STYLE),
         html.Hr(),
         content_first_row,
-        content_second_row,
+        # content_second_row,
         content_third_row,
         content_fourth_row,
     ],
     style=CONTENT_STYLE,
 )
 
-app = dash.Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
-app.layout = html.Div([sidebar, content])
+app = Dash(
+    external_stylesheets=[
+        dbc.themes.BOOTSTRAP,
+    ]
+)
+load_figure_template("BOOTSTRAP")
+
+app.layout = html.Div(
+    [
+        sidebar,
+        content,
+    ]
+)
+
+
+@app.callback(
+    Output(component_id="renderedGraph", component_property="figure"),
+    Input(component_id="columnDropdown", component_property="value"),
+    Input(component_id="tableDropdown", component_property="value"),
+)
+def renderGraph(selectedColumn, selectedTable):
+    df = read_sql(selectedTable, engine)
+    df.Date = to_datetime(df.Date)
+    lineFig = line(df, x=df.Date, y=selectedColumn, title=f"{selectedColumn}")
+    return lineFig
+
 
 if __name__ == "__main__":
-    app.run_server(port="8085")
+    app.run_server(port="8085", debug=True)
