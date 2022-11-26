@@ -1,10 +1,12 @@
 from dash import Dash, html, dcc, Input, Output
-import sqlalchemy as sa
-import pandas as pd
-import plotly.express as px
+from pandas import to_datetime, read_sql
+import dash_bootstrap_components as dbc
+from dash_bootstrap_templates import load_figure_template
+from plotly.express import line
 from listCreations import columnOptions, tableOptions, engine
 
-app = Dash()
+app = Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
+load_figure_template("BOOTSTRAP")
 
 
 app.layout = html.Div(
@@ -26,9 +28,9 @@ app.layout = html.Div(
     Input(component_id="tableDropdown", component_property="value"),
 )
 def renderGraph(selectedColumn, selectedTable):
-    df = pd.read_sql(selectedTable, engine)
-    df.Date = pd.to_datetime(df.Date)
-    lineFig = px.line(df, x=df.Date, y=selectedColumn, title=f"{selectedColumn}")
+    df = read_sql(selectedTable, engine)
+    df.Date = to_datetime(df.Date)
+    lineFig = line(df, x=df.Date, y=selectedColumn, title=f"{selectedColumn}")
     return lineFig
 
 
