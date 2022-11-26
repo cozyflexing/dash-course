@@ -57,8 +57,8 @@ content_first_row = dbc.Row(
                                 style=CARD_TEXT_STYLE,
                             ),
                             html.P(
-                                id="card_text_1",
-                                children=["Sample text."],
+                                id="last",
+                                children=[""],
                                 style=CARD_TEXT_STYLE,
                             ),
                         ]
@@ -78,7 +78,11 @@ content_first_row = dbc.Row(
                                 className="card-title",
                                 style=CARD_TEXT_STYLE,
                             ),
-                            html.P("Sample text.", style=CARD_TEXT_STYLE),
+                            html.P(
+                                id="average",
+                                children=[],
+                                style=CARD_TEXT_STYLE,
+                            ),
                         ]
                     ),
                 ]
@@ -96,7 +100,11 @@ content_first_row = dbc.Row(
                                 className="card-title",
                                 style=CARD_TEXT_STYLE,
                             ),
-                            html.P("Sample text.", style=CARD_TEXT_STYLE),
+                            html.P(
+                                id="high",
+                                children=[],
+                                style=CARD_TEXT_STYLE,
+                            ),
                         ]
                     ),
                 ]
@@ -114,7 +122,11 @@ content_first_row = dbc.Row(
                                 className="card-title",
                                 style=CARD_TEXT_STYLE,
                             ),
-                            html.P("Sample text.", style=CARD_TEXT_STYLE),
+                            html.P(
+                                id="low",
+                                children=[],
+                                style=CARD_TEXT_STYLE,
+                            ),
                         ]
                     ),
                 ]
@@ -146,7 +158,6 @@ content_third_row = dbc.Row(
         )
     ]
 )
-
 
 content_fourth_row = dbc.Row(
     [
@@ -184,6 +195,10 @@ app.layout = html.Div(
 
 @app.callback(
     Output(component_id="renderedGraph", component_property="figure"),
+    Output(component_id="last", component_property="children"),
+    Output(component_id="average", component_property="children"),
+    Output(component_id="high", component_property="children"),
+    Output(component_id="low", component_property="children"),
     Input(component_id="columnDropdown", component_property="value"),
     Input(component_id="tableDropdown", component_property="value"),
 )
@@ -191,7 +206,13 @@ def renderGraph(selectedColumn, selectedTable):
     df = read_sql(selectedTable, engine)
     df.Date = to_datetime(df.Date)
     lineFig = line(df, x=df.Date, y=selectedColumn, title=f"{selectedColumn}")
-    return lineFig
+    return (
+        lineFig,
+        int(df[selectedColumn].iloc[0]),
+        int(df[selectedColumn].mean()),
+        int(df[selectedColumn].max()),
+        int(df[selectedColumn].min()),
+    )
 
 
 if __name__ == "__main__":
