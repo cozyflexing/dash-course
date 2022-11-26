@@ -2,11 +2,9 @@ from dash import Dash, html, dcc, Input, Output
 import sqlalchemy as sa
 import pandas as pd
 import plotly.express as px
-from listCreations import columnOptions, tableOptions
+from listCreations import columnOptions, tableOptions, engine
 
 app = Dash()
-
-engine = sa.create_engine("sqlite:///sqlalchemyCFTCDATA.sqlite")
 
 
 app.layout = html.Div(
