@@ -73,7 +73,7 @@ content_first_row = dbc.Row(
                         [
                             html.H4(
                                 id="Card Title 2",
-                                children=["Average:"],
+                                children=["Mean:"],
                                 className="card-title",
                                 style=CARD_TEXT_STYLE,
                             ),
@@ -204,9 +204,23 @@ app.layout = html.Div(
 def renderGraph(selectedColumn, selectedTable):
     df = read_sql(selectedTable, engine)
     df.Date = to_datetime(df.Date)
-    mask = (df["Date"] > "2020-01-01") & (df["Date"] <= "2022-01-01")
+    mask = df["Date"] > "2017-01-01"
     df = df.loc[mask]
     lineFig = line(df, x=df.Date, y=selectedColumn, title=f"{selectedColumn}")
+    lineFig.update_xaxes(
+        rangeslider_visible=True,
+        rangeselector=dict(
+            buttons=list(
+                [
+                    dict(count=1, label="1m", step="month", stepmode="backward"),
+                    dict(count=6, label="6m", step="month", stepmode="backward"),
+                    dict(count=1, label="YTD", step="year", stepmode="todate"),
+                    dict(count=1, label="1y", step="year", stepmode="backward"),
+                    dict(step="all"),
+                ]
+            )
+        ),
+    )
     return (
         lineFig,
         int(df[selectedColumn].iloc[0]),

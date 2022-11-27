@@ -9,6 +9,5 @@ selectedColumn = "OpenInterest"
 
 df = read_sql("EUR", engine)
 df.Date = to_datetime(df.Date)
-mask = (df["Date"] > "2022-05-17") & (df["Date"] <= "2022-09-13")
-df = df.loc[mask]
-lineFig = line(df, x=df.Date, y=selectedColumn, title=f"{selectedColumn}")
+
+print(df.Date.idxmin())
