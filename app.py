@@ -148,9 +148,12 @@ content_third_row = dbc.Row(
         dbc.Col(
             children=[
                 dcc.Graph(id="renderedGraph"),
+                html.P("Select data type:"),
                 dcc.Dropdown(
                     options=columnOptions, value="OpenInterest", id="columnDropdown"
                 ),
+                html.P(""),
+                html.P("Select asset:"),
                 dcc.Dropdown(options=tableOptions, value="EUR", id="tableDropdown"),
             ],
             md=12,
