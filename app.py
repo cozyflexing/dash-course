@@ -135,13 +135,13 @@ content_first_row = dbc.Row(
     ]
 )
 
-content_second_row = dbc.Row(
-    [
-        dbc.Col(dcc.Graph(id="graph_1"), md=4),
-        dbc.Col(dcc.Graph(id="graph_2"), md=4),
-        dbc.Col(dcc.Graph(id="graph_3"), md=4),
-    ]
-)
+# content_second_row = dbc.Row(
+#     [
+#         dbc.Col(dcc.Graph(id="graph_1"), md=4),
+#         dbc.Col(dcc.Graph(id="graph_2"), md=4),
+#         dbc.Col(dcc.Graph(id="graph_3"), md=4),
+#     ]
+# )
 
 content_third_row = dbc.Row(
     [
@@ -158,12 +158,12 @@ content_third_row = dbc.Row(
     ]
 )
 
-content_fourth_row = dbc.Row(
-    [
-        dbc.Col(dcc.Graph(id="graph_5"), md=6),
-        dbc.Col(dcc.Graph(id="graph_6"), md=6),
-    ]
-)
+# content_fourth_row = dbc.Row(
+#     [
+#         dbc.Col(dcc.Graph(id="graph_5"), md=6),
+#         dbc.Col(dcc.Graph(id="graph_6"), md=6),
+#     ]
+# )
 
 content = html.Div(
     [
@@ -172,7 +172,7 @@ content = html.Div(
         content_first_row,
         # content_second_row,
         content_third_row,
-        content_fourth_row,
+        # content_fourth_row,
     ],
     style=CONTENT_STYLE,
 )
@@ -204,6 +204,8 @@ app.layout = html.Div(
 def renderGraph(selectedColumn, selectedTable):
     df = read_sql(selectedTable, engine)
     df.Date = to_datetime(df.Date)
+    mask = (df["Date"] > "2020-01-01") & (df["Date"] <= "2022-01-01")
+    df = df.loc[mask]
     lineFig = line(df, x=df.Date, y=selectedColumn, title=f"{selectedColumn}")
     return (
         lineFig,
