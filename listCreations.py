@@ -19,4 +19,10 @@ for table in tables:
 for col in df.head():
     columnOptions.append(col)
 
+pie_options = [
+    "Noncommercial",
+    "Commercial",
+    "Nonreportable Positions",
+]
+
 columnOptions.remove("Date")
