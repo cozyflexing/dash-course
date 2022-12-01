@@ -35,7 +35,16 @@ CARD_TEXT_STYLE = {
     "textAlign": "center",
     "color": "#black",
 }
-
+PIE_CHART_DIV_STYLE = {
+    "position": "relative",
+}
+PIE_CHART_TEXT_STYLE = {
+    "position": "absolute",
+    "z-index": "999",
+    "top": "50%",
+    "left": "50%",
+    "transform": "translate(-50%, -50%)",
+}
 sidebar = html.Div(
     [
         html.H2("Menu", style=TEXT_STYLE),
@@ -146,29 +155,33 @@ content_second_row = dbc.Row(
                         [
                             html.Div(
                                 [
-                                    html.H4("Analysis of positions"),
+                                    html.P(
+                                        "Change from last release",
+                                        style=PIE_CHART_TEXT_STYLE,
+                                    ),
                                     dcc.Graph(id="pie_chart"),
-                                    html.P("Names:"),
-                                    dcc.Dropdown(
-                                        id="tables",
-                                        options=tableOptions,
-                                        value="EUR",
-                                        clearable=False,
-                                    ),
-                                    html.P("Values:"),
-                                    dcc.Dropdown(
-                                        id="category",
-                                        options=pie_options,
-                                        value="Commercial",
-                                        clearable=False,
-                                    ),
-                                ]
-                            )
+                                ],
+                                style=PIE_CHART_DIV_STYLE,
+                            ),
                         ]
+                    ),
+                    html.P("Names:"),
+                    dcc.Dropdown(
+                        id="tables",
+                        options=tableOptions,
+                        value="EUR",
+                        clearable=False,
+                    ),
+                    html.P("Values:"),
+                    dcc.Dropdown(
+                        id="category",
+                        options=pie_options,
+                        value="Commercial",
+                        clearable=False,
                     ),
                 ]
             ),
-            md=6,
+            md=5,
         ),
     ],
     style=CARD_TEXT_STYLE,
@@ -258,7 +271,7 @@ def generate_chart(tables, category):
             df,
             values="result",
             names="type",
-            hole=0.7,
+            hole=0.6,
             color_discrete_sequence=["red", "green"],
         )
     if category == "Noncommercial":
@@ -291,7 +304,7 @@ def generate_chart(tables, category):
             df,
             values="result",
             names="type",
-            hole=0.7,
+            hole=0.6,
             color_discrete_sequence=["red", "green"],
         )
     if category == "Nonreportable Positions":
@@ -330,7 +343,7 @@ def generate_chart(tables, category):
             df,
             values="result",
             names="type",
-            hole=0.7,
+            hole=0.6,
             color_discrete_sequence=["red", "green"],
         )
     pieChart.update(layout_showlegend=False)
