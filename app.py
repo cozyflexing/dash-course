@@ -6,6 +6,7 @@ from dash_bootstrap_templates import load_figure_template
 from plotly.express import line
 import plotly.express as px
 from listCreations import columnOptions, tableOptions, engine, pie_options
+import functions
 
 # the style arguments for the sidebar.
 SIDEBAR_STYLE = {
@@ -156,8 +157,9 @@ content_second_row = dbc.Row(
                             html.Div(
                                 [
                                     html.P(
-                                        "Change from last release",
+                                        "",
                                         style=PIE_CHART_TEXT_STYLE,
+                                        id="pie_change",
                                     ),
                                     dcc.Graph(id="pie_chart"),
                                 ],
@@ -241,28 +243,22 @@ app.layout = html.Div(
 
 @app.callback(
     Output("pie_chart", "figure"),
+    Output("pie_change", "children"),
     Input("tables", "value"),
     Input("category", "value"),
 )
 def generate_chart(tables, category):
     df = read_sql(tables, engine)
-    df = df.iloc[0]
     if category == "Commercial":
         df = pd.DataFrame(
             [
                 [
                     "Short % Commercial",
-                    (
-                        (df.CommercialShort / (df.CommercialLong + df.CommercialShort))
-                        * 100
-                    ),
+                    (functions.commercial_short_percentage(df.iloc[0])),
                 ],
                 [
                     "Long % Commercial",
-                    (
-                        (df.CommercialLong / (df.CommercialLong + df.CommercialShort))
-                        * 100
-                    ),
+                    (functions.commercial_long_percentage(df.iloc[0])),
                 ],
             ],
             columns=["type", "result"],
@@ -279,23 +275,11 @@ def generate_chart(tables, category):
             [
                 [
                     "Short % Noncommercial",
-                    (
-                        (
-                            df.NoncommercialShort
-                            / (df.NoncommercialLong + df.NoncommercialShort)
-                        )
-                        * 100
-                    ),
+                    (functions.non_commercial_short_percentage(df.iloc[0])),
                 ],
                 [
                     "Long % Noncommercial",
-                    (
-                        (
-                            df.NoncommercialLong
-                            / (df.NoncommercialLong + df.NoncommercialShort)
-                        )
-                        * 100
-                    ),
+                    (functions.non_commercial_long_percentage(df.iloc[0])),
                 ],
             ],
             columns=["type", "result"],
@@ -312,29 +296,11 @@ def generate_chart(tables, category):
             [
                 [
                     "Short % Nonreportable Positions",
-                    (
-                        (
-                            df.NonreportablePositionsShort
-                            / (
-                                df.NonreportablePositionsLong
-                                + df.NonreportablePositionsShort
-                            )
-                        )
-                        * 100
-                    ),
+                    (functions.nonreportable_short_percentage(df.iloc[0])),
                 ],
                 [
                     "Long % Nonreportable Positions",
-                    (
-                        (
-                            df.NonreportablePositionsLong
-                            / (
-                                df.NonreportablePositionsLong
-                                + df.NonreportablePositionsShort
-                            )
-                        )
-                        * 100
-                    ),
+                    (functions.nonreportable_long_percentage(df.iloc[0])),
                 ],
             ],
             columns=["type", "result"],
@@ -348,7 +314,7 @@ def generate_chart(tables, category):
         )
     pieChart.update(layout_showlegend=False)
     pieChart.update_layout(margin=dict(t=0, b=0, l=0, r=0))
-    return pieChart
+    return pieChart, "Hello World"
 
 
 @app.callback(
