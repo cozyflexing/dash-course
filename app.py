@@ -8,6 +8,7 @@ import plotly.express as px
 from listCreations import columnOptions, tableOptions, engine, pie_options
 import functions
 
+
 # the style arguments for the sidebar.
 SIDEBAR_STYLE = {
     "position": "fixed",
@@ -36,9 +37,11 @@ CARD_TEXT_STYLE = {
     "textAlign": "center",
     "color": "#black",
 }
+
 PIE_CHART_DIV_STYLE = {
     "position": "relative",
 }
+
 PIE_CHART_TEXT_STYLE = {
     "position": "absolute",
     "z-index": "999",
@@ -46,6 +49,7 @@ PIE_CHART_TEXT_STYLE = {
     "left": "50%",
     "transform": "translate(-50%, -50%)",
 }
+
 sidebar = html.Div(
     [
         html.H2("Menu", style=TEXT_STYLE),
@@ -183,7 +187,7 @@ content_second_row = dbc.Row(
                     ),
                 ]
             ),
-            md=5,
+            md=12,
         ),
     ],
     style=CARD_TEXT_STYLE,
@@ -249,7 +253,39 @@ app.layout = html.Div(
 )
 def generate_chart(tables, category):
     df = read_sql(tables, engine)
+    if category == "All":
+        df = pd.DataFrame(
+            [
+                [
+                    "Open Interest Commercial",
+                    (functions.total_open_interest_commercial(df.iloc[0])),
+                ],
+                [
+                    "Open Interest Noncommercial",
+                    (functions.total_open_interest_noncommercial(df.iloc[0])),
+                ],
+                [
+                    "Open Interest Nonreportable Positions",
+                    (functions.total_open_interest_nonreportable(df.iloc[0])),
+                ],
+            ],
+            columns=["type", "result"],
+        )
+        pieChart = px.pie(
+            df,
+            values="result",
+            names="type",
+            hole=0.6,
+            color_discrete_sequence=[
+                "#eff3ff",
+                "#bdd7e7",
+                "#6baed6",
+                "#3182bd",
+                "#08519c",
+            ],
+        )
     if category == "Commercial":
+
         df = pd.DataFrame(
             [
                 [
@@ -268,9 +304,16 @@ def generate_chart(tables, category):
             values="result",
             names="type",
             hole=0.6,
-            color_discrete_sequence=["red", "green"],
+            color_discrete_sequence=[
+                "#eff3ff",
+                "#bdd7e7",
+                "#6baed6",
+                "#3182bd",
+                "#08519c",
+            ],
         )
     if category == "Noncommercial":
+
         df = pd.DataFrame(
             [
                 [
@@ -289,9 +332,16 @@ def generate_chart(tables, category):
             values="result",
             names="type",
             hole=0.6,
-            color_discrete_sequence=["red", "green"],
+            color_discrete_sequence=[
+                "#eff3ff",
+                "#bdd7e7",
+                "#6baed6",
+                "#3182bd",
+                "#08519c",
+            ],
         )
     if category == "Nonreportable Positions":
+
         df = pd.DataFrame(
             [
                 [
@@ -310,11 +360,27 @@ def generate_chart(tables, category):
             values="result",
             names="type",
             hole=0.6,
-            color_discrete_sequence=["red", "green"],
+            color_discrete_sequence=[
+                "#eff3ff",
+                "#bdd7e7",
+                "#6baed6",
+                "#3182bd",
+                "#08519c",
+            ],
         )
-    pieChart.update(layout_showlegend=False)
-    pieChart.update_layout(margin=dict(t=0, b=0, l=0, r=0))
-    return pieChart, "Hello World"
+    pieChart.update_traces(rotation=20)
+    pieChart.update(layout_showlegend=True)
+    pieChart.update_layout(
+        margin=dict(t=0, b=0, l=0, r=0),
+        legend=dict(
+            yanchor="top",
+            y=0.99,
+            xanchor="left",
+            x=0.01,
+            bgcolor="White",
+        ),
+    )
+    return pieChart, f"Hello"
 
 
 @app.callback(
