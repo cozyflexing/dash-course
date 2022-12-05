@@ -63,3 +63,8 @@ def total_open_interest(df):
         + total_open_interest_nonreportable(df)
     )
     return result
+
+
+def percentage_change(current, previous):
+    result = ((current - previous) / (previous)) * 100
+    return f"{int(result)}%"

@@ -1,4 +1,4 @@
-from dash import Dash, html, dcc, Input, Output
+from dash import Dash, html, dcc, Input, Output, dash_table
 from pandas import to_datetime, read_sql
 import pandas as pd
 import dash_bootstrap_components as dbc
@@ -33,8 +33,12 @@ TEXT_STYLE = {
     "color": "black",
 }
 
-CARD_TEXT_STYLE = {
+PIE_CARD_TEXT_STYLE = {
     "textAlign": "center",
+    "color": "#black",
+}
+TABLE_CARD_TEXT_STYLE = {
+    "textAlign": "left",
     "color": "#black",
 }
 
@@ -69,12 +73,12 @@ content_first_row = dbc.Row(
                                 id="card_title_1",
                                 children=["Last:"],
                                 className="card-title",
-                                style=CARD_TEXT_STYLE,
+                                style=PIE_CARD_TEXT_STYLE,
                             ),
                             html.P(
                                 id="last",
                                 children=[""],
-                                style=CARD_TEXT_STYLE,
+                                style=PIE_CARD_TEXT_STYLE,
                             ),
                         ]
                     )
@@ -91,12 +95,12 @@ content_first_row = dbc.Row(
                                 id="Card Title 2",
                                 children=["Mean:"],
                                 className="card-title",
-                                style=CARD_TEXT_STYLE,
+                                style=PIE_CARD_TEXT_STYLE,
                             ),
                             html.P(
                                 id="average",
                                 children=[],
-                                style=CARD_TEXT_STYLE,
+                                style=PIE_CARD_TEXT_STYLE,
                             ),
                         ]
                     ),
@@ -113,12 +117,12 @@ content_first_row = dbc.Row(
                                 id="Card Title 3",
                                 children=["High:"],
                                 className="card-title",
-                                style=CARD_TEXT_STYLE,
+                                style=PIE_CARD_TEXT_STYLE,
                             ),
                             html.P(
                                 id="high",
                                 children=[],
-                                style=CARD_TEXT_STYLE,
+                                style=PIE_CARD_TEXT_STYLE,
                             ),
                         ]
                     ),
@@ -135,12 +139,12 @@ content_first_row = dbc.Row(
                                 id="Card Title 4",
                                 children=["Low:"],
                                 className="card-title",
-                                style=CARD_TEXT_STYLE,
+                                style=PIE_CARD_TEXT_STYLE,
                             ),
                             html.P(
                                 id="low",
                                 children=[],
-                                style=CARD_TEXT_STYLE,
+                                style=PIE_CARD_TEXT_STYLE,
                             ),
                         ]
                     ),
@@ -187,10 +191,56 @@ content_second_row = dbc.Row(
                     ),
                 ]
             ),
-            md=12,
+            style=PIE_CARD_TEXT_STYLE,
+            md=6,
+        ),
+        dbc.Col(
+            dbc.Card(
+                dbc.CardBody(
+                    children=[
+                        dbc.Row(
+                            [
+                                dbc.Col(html.P("Type")),
+                                dbc.Col(html.P("Current")),
+                                dbc.Col(html.P("3 Month")),
+                                dbc.Col(html.P("6 Month")),
+                                dbc.Col(html.P("1 Year")),
+                            ]
+                        ),
+                        dbc.Row(
+                            [
+                                dbc.Col(html.P("Open Interest Commercial")),
+                                dbc.Col(html.P("HEY")),
+                                dbc.Col(html.P("HEY")),
+                                dbc.Col(html.P("HEY")),
+                                dbc.Col(html.P("HEY")),
+                            ]
+                        ),
+                        dbc.Row(
+                            [
+                                dbc.Col(html.P("HEY")),
+                                dbc.Col(html.P("HEY")),
+                                dbc.Col(html.P("HEY")),
+                                dbc.Col(html.P("HEY")),
+                                dbc.Col(html.P("HEY")),
+                            ]
+                        ),
+                        dbc.Row(
+                            [
+                                dbc.Col(html.P("HEY")),
+                                dbc.Col(html.P("HEY")),
+                                dbc.Col(html.P("HEY")),
+                                dbc.Col(html.P("HEY")),
+                                dbc.Col(html.P("HEY")),
+                            ]
+                        ),
+                    ]
+                )
+            ),
+            style=TABLE_CARD_TEXT_STYLE,
+            md=6,
         ),
     ],
-    style=CARD_TEXT_STYLE,
 )
 
 content_third_row = dbc.Row(
@@ -207,7 +257,7 @@ content_third_row = dbc.Row(
                 dcc.Dropdown(options=tableOptions, value="EUR", id="tableDropdown"),
             ],
             md=12,
-        )
+        ),
     ]
 )
 
