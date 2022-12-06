@@ -54,98 +54,98 @@ sidebar = html.Div(
     style=SIDEBAR_STYLE,
 )
 
-content_first_row = dbc.Row(
-    [
-        dbc.Col(
-            dbc.Card(
-                [
-                    dbc.CardBody(
-                        [
-                            html.H4(
-                                id="card_title_1",
-                                children=["Last:"],
-                                className="card-title",
-                                style=PIE_CARD_TEXT_STYLE,
-                            ),
-                            html.P(
-                                id="last",
-                                children=[""],
-                                style=PIE_CARD_TEXT_STYLE,
-                            ),
-                        ]
-                    )
-                ]
-            ),
-            md=3,
-        ),
-        dbc.Col(
-            dbc.Card(
-                [
-                    dbc.CardBody(
-                        [
-                            html.H4(
-                                id="Card Title 2",
-                                children=["Mean:"],
-                                className="card-title",
-                                style=PIE_CARD_TEXT_STYLE,
-                            ),
-                            html.P(
-                                id="average",
-                                children=[],
-                                style=PIE_CARD_TEXT_STYLE,
-                            ),
-                        ]
-                    ),
-                ]
-            ),
-            md=3,
-        ),
-        dbc.Col(
-            dbc.Card(
-                [
-                    dbc.CardBody(
-                        [
-                            html.H4(
-                                id="Card Title 3",
-                                children=["High:"],
-                                className="card-title",
-                                style=PIE_CARD_TEXT_STYLE,
-                            ),
-                            html.P(
-                                id="high",
-                                children=[],
-                                style=PIE_CARD_TEXT_STYLE,
-                            ),
-                        ]
-                    ),
-                ]
-            ),
-            md=3,
-        ),
-        dbc.Col(
-            dbc.Card(
-                [
-                    dbc.CardBody(
-                        [
-                            html.H4(
-                                id="Card Title 4",
-                                children=["Low:"],
-                                className="card-title",
-                                style=PIE_CARD_TEXT_STYLE,
-                            ),
-                            html.P(
-                                id="low",
-                                children=[],
-                                style=PIE_CARD_TEXT_STYLE,
-                            ),
-                        ]
-                    ),
-                ]
-            ),
-            md=3,
-        ),
-    ]
-)
+# content_first_row = dbc.Row(
+#     [
+#         dbc.Col(
+#             dbc.Card(
+#                 [
+#                     dbc.CardBody(
+#                         [
+#                             html.H4(
+#                                 id="card_title_1",
+#                                 children=["Last:"],
+#                                 className="card-title",
+#                                 style=PIE_CARD_TEXT_STYLE,
+#                             ),
+#                             html.P(
+#                                 id="last",
+#                                 children=[""],
+#                                 style=PIE_CARD_TEXT_STYLE,
+#                             ),
+#                         ]
+#                     )
+#                 ]
+#             ),
+#             md=3,
+#         ),
+#         dbc.Col(
+#             dbc.Card(
+#                 [
+#                     dbc.CardBody(
+#                         [
+#                             html.H4(
+#                                 id="Card Title 2",
+#                                 children=["Mean:"],
+#                                 className="card-title",
+#                                 style=PIE_CARD_TEXT_STYLE,
+#                             ),
+#                             html.P(
+#                                 id="average",
+#                                 children=[],
+#                                 style=PIE_CARD_TEXT_STYLE,
+#                             ),
+#                         ]
+#                     ),
+#                 ]
+#             ),
+#             md=3,
+#         ),
+#         dbc.Col(
+#             dbc.Card(
+#                 [
+#                     dbc.CardBody(
+#                         [
+#                             html.H4(
+#                                 id="Card Title 3",
+#                                 children=["High:"],
+#                                 className="card-title",
+#                                 style=PIE_CARD_TEXT_STYLE,
+#                             ),
+#                             html.P(
+#                                 id="high",
+#                                 children=[],
+#                                 style=PIE_CARD_TEXT_STYLE,
+#                             ),
+#                         ]
+#                     ),
+#                 ]
+#             ),
+#             md=3,
+#         ),
+#         dbc.Col(
+#             dbc.Card(
+#                 [
+#                     dbc.CardBody(
+#                         [
+#                             html.H4(
+#                                 id="Card Title 4",
+#                                 children=["Low:"],
+#                                 className="card-title",
+#                                 style=PIE_CARD_TEXT_STYLE,
+#                             ),
+#                             html.P(
+#                                 id="low",
+#                                 children=[],
+#                                 style=PIE_CARD_TEXT_STYLE,
+#                             ),
+#                         ]
+#                     ),
+#                 ]
+#             ),
+#             md=3,
+#         ),
+#     ]
+# )
 
 content_second_row = dbc.Row(
     [
@@ -231,6 +231,7 @@ content_second_row = dbc.Row(
             ),
             style=TABLE_CARD_TEXT_STYLE,
             md=6,
+            sm=12,
         ),
     ],
 )
@@ -239,7 +240,7 @@ content_third_row = dbc.Row(
     [
         dbc.Col(
             children=[
-                dcc.Graph(id="rendelightcyanGraph"),
+                dcc.Graph(id="mainGraph"),
                 html.P("Select data type:"),
                 dcc.Dropdown(
                     options=columnOptions, value="OpenInterest", id="columnDropdown"
@@ -264,7 +265,7 @@ content = html.Div(
     [
         html.H2("Sixteen Analytics Dashboard", style=TEXT_STYLE),
         html.Hr(),
-        content_first_row,
+        # content_first_row,
         content_second_row,
         content_third_row,
         content_fourth_row,
@@ -304,7 +305,7 @@ app.layout = html.Div(
     Input("tables", "value"),
     Input("category", "value"),
 )
-def generate_chart(tables, category):
+def renderPieChart(tables, category):
     df = read_sql(tables, engine)
     current_commercial = functions.total_open_interest_commercial(df.iloc[0])
     current_noncommercial = functions.total_open_interest_noncommercial(df.iloc[0])
@@ -509,11 +510,11 @@ def generate_chart(tables, category):
 
 
 @app.callback(
-    Output(component_id="rendelightcyanGraph", component_property="figure"),
-    Output(component_id="last", component_property="children"),
-    Output(component_id="average", component_property="children"),
-    Output(component_id="high", component_property="children"),
-    Output(component_id="low", component_property="children"),
+    Output(component_id="mainGraph", component_property="figure"),
+    # Output(component_id="last", component_property="children"),
+    # Output(component_id="average", component_property="children"),
+    # Output(component_id="high", component_property="children"),
+    # Output(component_id="low", component_property="children"),
     Input(component_id="columnDropdown", component_property="value"),
     Input(component_id="tableDropdown", component_property="value"),
 )
@@ -538,11 +539,11 @@ def renderGraph(selectedColumn, selectedTable):
         ),
     )
     return (
-        lineFig,
-        int(df[selectedColumn].iloc[0]),
-        int(df[selectedColumn].mean()),
-        int(df[selectedColumn].max()),
-        int(df[selectedColumn].min()),
+        lineFig
+        # int(df[selectedColumn].iloc[0]),
+        # int(df[selectedColumn].mean()),
+        # int(df[selectedColumn].max()),
+        # int(df[selectedColumn].min()),
     )
 
 
