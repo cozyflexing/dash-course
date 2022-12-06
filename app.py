@@ -46,14 +46,6 @@ PIE_CHART_DIV_STYLE = {
     "position": "relative",
 }
 
-PIE_CHART_TEXT_STYLE = {
-    "position": "absolute",
-    "z-index": "999",
-    "top": "50%",
-    "left": "50%",
-    "transform": "translate(-50%, -50%)",
-}
-
 sidebar = html.Div(
     [
         html.H2("Menu", style=TEXT_STYLE),
@@ -164,11 +156,6 @@ content_second_row = dbc.Row(
                         [
                             html.Div(
                                 [
-                                    html.P(
-                                        "",
-                                        style=PIE_CHART_TEXT_STYLE,
-                                        id="pie_change",
-                                    ),
                                     dcc.Graph(id="pie_chart"),
                                 ],
                                 style=PIE_CHART_DIV_STYLE,
@@ -198,40 +185,45 @@ content_second_row = dbc.Row(
             dbc.Card(
                 dbc.CardBody(
                     children=[
+                        html.H5("Open Interest Relative Change"),
                         dbc.Row(
                             [
                                 dbc.Col(html.P("Type")),
-                                dbc.Col(html.P("Current")),
-                                dbc.Col(html.P("3 Month")),
-                                dbc.Col(html.P("6 Month")),
-                                dbc.Col(html.P("1 Year")),
+                                dbc.Col(html.P("Commercial")),
+                                dbc.Col(html.P("Noncommercial")),
+                                dbc.Col(html.P("Nonreportable")),
                             ]
                         ),
                         dbc.Row(
                             [
-                                dbc.Col(html.P("Open Interest Commercial")),
-                                dbc.Col(html.P("HEY")),
-                                dbc.Col(html.P("HEY")),
-                                dbc.Col(html.P("HEY")),
-                                dbc.Col(html.P("HEY")),
+                                dbc.Col(html.P("Current:")),
+                                dbc.Col(html.P(id="Current Commercial")),
+                                dbc.Col(html.P(id="Current Noncommercial")),
+                                dbc.Col(html.P(id="Current Nonreportable")),
                             ]
                         ),
                         dbc.Row(
                             [
-                                dbc.Col(html.P("HEY")),
-                                dbc.Col(html.P("HEY")),
-                                dbc.Col(html.P("HEY")),
-                                dbc.Col(html.P("HEY")),
-                                dbc.Col(html.P("HEY")),
+                                dbc.Col(html.P("3 Month:")),
+                                dbc.Col(html.P(id="3 Month Commercial")),
+                                dbc.Col(html.P(id="3 Month Noncommercial")),
+                                dbc.Col(html.P(id="3 Month Nonreportable")),
                             ]
                         ),
                         dbc.Row(
                             [
-                                dbc.Col(html.P("HEY")),
-                                dbc.Col(html.P("HEY")),
-                                dbc.Col(html.P("HEY")),
-                                dbc.Col(html.P("HEY")),
-                                dbc.Col(html.P("HEY")),
+                                dbc.Col(html.P("6 Month:")),
+                                dbc.Col(html.P(id="6 Month Commercial")),
+                                dbc.Col(html.P(id="6 Month Noncommercial")),
+                                dbc.Col(html.P(id="6 Month Nonreportable")),
+                            ]
+                        ),
+                        dbc.Row(
+                            [
+                                dbc.Col(html.P("1 Year:")),
+                                dbc.Col(html.P(id="1 Year Commercial")),
+                                dbc.Col(html.P(id="1 Year Noncommercial")),
+                                dbc.Col(html.P(id="1 Year Nonreportable")),
                             ]
                         ),
                     ]
@@ -297,12 +289,81 @@ app.layout = html.Div(
 
 @app.callback(
     Output("pie_chart", "figure"),
-    Output("pie_change", "children"),
+    Output(component_id="Current Commercial", component_property="children"),
+    Output(component_id="Current Noncommercial", component_property="children"),
+    Output(component_id="Current Nonreportable", component_property="children"),
+    Output(component_id="3 Month Commercial", component_property="children"),
+    Output(component_id="3 Month Noncommercial", component_property="children"),
+    Output(component_id="3 Month Nonreportable", component_property="children"),
+    Output(component_id="6 Month Commercial", component_property="children"),
+    Output(component_id="6 Month Noncommercial", component_property="children"),
+    Output(component_id="6 Month Nonreportable", component_property="children"),
+    Output(component_id="1 Year Commercial", component_property="children"),
+    Output(component_id="1 Year Noncommercial", component_property="children"),
+    Output(component_id="1 Year Nonreportable", component_property="children"),
     Input("tables", "value"),
     Input("category", "value"),
 )
 def generate_chart(tables, category):
     df = read_sql(tables, engine)
+    current_commercial = functions.total_open_interest_commercial(df.iloc[0])
+    current_noncommercial = functions.total_open_interest_noncommercial(df.iloc[0])
+    current_nonreportable = functions.total_open_interest_nonreportable(df.iloc[0])
+    cc_3month_change = int(
+        functions.percentage_change(
+            (functions.total_open_interest_commercial(df.iloc[0])),
+            (functions.total_open_interest_commercial(df.iloc[11])),
+        )
+    )
+    nc_3month_change = int(
+        functions.percentage_change(
+            functions.total_open_interest_noncommercial(df.iloc[0]),
+            functions.total_open_interest_noncommercial(df.iloc[11]),
+        )
+    )
+    nr_3month_change = int(
+        functions.percentage_change(
+            functions.total_open_interest_nonreportable(df.iloc[0]),
+            functions.total_open_interest_nonreportable(df.iloc[11]),
+        )
+    )
+    cc_6month_change = int(
+        functions.percentage_change(
+            (functions.total_open_interest_commercial(df.iloc[0])),
+            (functions.total_open_interest_commercial(df.iloc[25])),
+        )
+    )
+    nc_6month_change = int(
+        functions.percentage_change(
+            (functions.total_open_interest_noncommercial(df.iloc[0])),
+            (functions.total_open_interest_noncommercial(df.iloc[25])),
+        )
+    )
+    nr_6month_change = int(
+        functions.percentage_change(
+            (functions.total_open_interest_nonreportable(df.iloc[0])),
+            (functions.total_open_interest_nonreportable(df.iloc[25])),
+        )
+    )
+    cc_1year_change = int(
+        functions.percentage_change(
+            (functions.total_open_interest_commercial(df.iloc[0])),
+            (functions.total_open_interest_commercial(df.iloc[51])),
+        )
+    )
+    nc_1year_change = int(
+        functions.percentage_change(
+            (functions.total_open_interest_noncommercial(df.iloc[0])),
+            (functions.total_open_interest_noncommercial(df.iloc[51])),
+        )
+    )
+    nr_1year_change = int(
+        functions.percentage_change(
+            (functions.total_open_interest_nonreportable(df.iloc[0])),
+            (functions.total_open_interest_nonreportable(df.iloc[51])),
+        )
+    )
+
     if category == "All":
         df = pd.DataFrame(
             [
@@ -430,7 +491,21 @@ def generate_chart(tables, category):
             bgcolor="White",
         ),
     )
-    return pieChart, f"Hello"
+    return (
+        pieChart,
+        f"{current_commercial}",
+        f"{current_noncommercial}",
+        f"{current_nonreportable}",
+        f"{cc_3month_change}%",
+        f"{nc_3month_change}%",
+        f"{nr_3month_change}%",
+        f"{cc_6month_change}%",
+        f"{nc_6month_change}%",
+        f"{nr_6month_change}%",
+        f"{cc_1year_change}%",
+        f"{nc_1year_change}%",
+        f"{nr_1year_change}%",
+    )
 
 
 @app.callback(

@@ -125,10 +125,6 @@ app.layout = html.Div(
 
 
 @app.callback(
-    Output(component_id="type", component_property="children"),
-    Output(component_id="3 Month", component_property="children"),
-    Output(component_id="6 Month", component_property="children"),
-    Output(component_id="1 Year", component_property="children"),
     Output(component_id="my-output4", component_property="children"),
     Output(component_id="my-output5", component_property="children"),
     Output(component_id="my-output6", component_property="children"),
@@ -147,10 +143,6 @@ def update_output_div(input_value):
         (functions.total_open_interest_noncommercial(df.iloc[11])),
     )
     return (
-        f"Current",
-        f"3 Month",
-        f"6 Month",
-        f"1 Year",
         f"{result}",
         f"{result}",
         f"{result}",

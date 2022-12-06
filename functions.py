@@ -67,4 +67,4 @@ def total_open_interest(df):
 
 def percentage_change(current, previous):
     result = ((current - previous) / (previous)) * 100
-    return f"{int(result)}%"
+    return result
