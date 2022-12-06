@@ -189,9 +189,9 @@ content_second_row = dbc.Row(
                         dbc.Row(
                             [
                                 dbc.Col(html.P("Type")),
-                                dbc.Col(html.P("Commercial")),
-                                dbc.Col(html.P("Noncommercial")),
-                                dbc.Col(html.P("Nonreportable")),
+                                dbc.Col(html.P("Comm.")),
+                                dbc.Col(html.P("Noncomm.")),
+                                dbc.Col(html.P("Nonrep.")),
                             ]
                         ),
                         dbc.Row(
@@ -231,7 +231,6 @@ content_second_row = dbc.Row(
             ),
             style=TABLE_CARD_TEXT_STYLE,
             md=6,
-            sm=12,
         ),
     ],
 )
