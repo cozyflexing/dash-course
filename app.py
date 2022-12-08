@@ -162,14 +162,14 @@ content_second_row = dbc.Row(
                             ),
                         ]
                     ),
-                    html.P("Names:"),
+                    html.Div("Contracts:"),
                     dcc.Dropdown(
                         id="tables",
                         options=tableOptions,
                         value="EUR",
                         clearable=False,
                     ),
-                    html.P("Values:"),
+                    html.Div("Categories:"),
                     dcc.Dropdown(
                         id="category",
                         options=pie_options,
@@ -179,58 +179,172 @@ content_second_row = dbc.Row(
                 ]
             ),
             style=PIE_CARD_TEXT_STYLE,
-            md=6,
         ),
         dbc.Col(
-            dbc.Card(
-                dbc.CardBody(
-                    children=[
-                        html.H5("Open Interest Relative Change"),
-                        dbc.Row(
-                            [
-                                dbc.Col(html.P("Type")),
-                                dbc.Col(html.P("Comm.")),
-                                dbc.Col(html.P("Noncomm.")),
-                                dbc.Col(html.P("Nonrep.")),
+            children=[
+                dbc.Card(
+                    dbc.CardBody(
+                        html.Div(
+                            children=[
+                                html.H5("Open Interest Relative Change"),
+                                html.Table(
+                                    children=[
+                                        html.Tr(
+                                            children=[
+                                                html.Th(""),
+                                                html.Th("Commercial"),
+                                                html.Th("Noncommercial"),
+                                                html.Th("Nonreportable"),
+                                            ]
+                                        ),
+                                        html.Tr(
+                                            children=[
+                                                html.Td("Current:"),
+                                                html.Td(
+                                                    id="Current Relative Commercial"
+                                                ),
+                                                html.Td(
+                                                    id="Current Relative Noncommercial"
+                                                ),
+                                                html.Td(
+                                                    id="Current Relative Nonreportable"
+                                                ),
+                                            ]
+                                        ),
+                                        html.Tr(
+                                            children=[
+                                                html.Td("3 Month:"),
+                                                html.Td(
+                                                    id="3 Month Relative Commercial"
+                                                ),
+                                                html.Td(
+                                                    id="3 Month Relative Noncommercial"
+                                                ),
+                                                html.Td(
+                                                    id="3 Month Relative Nonreportable"
+                                                ),
+                                            ]
+                                        ),
+                                        html.Tr(
+                                            children=[
+                                                html.Td("6 Month:"),
+                                                html.Td(
+                                                    id="6 Month Relative Commercial"
+                                                ),
+                                                html.Td(
+                                                    id="6 Month Relative Noncommercial"
+                                                ),
+                                                html.Td(
+                                                    id="6 Month Relative Nonreportable"
+                                                ),
+                                            ]
+                                        ),
+                                        html.Tr(
+                                            children=[
+                                                html.Td("1 Year:"),
+                                                html.Td(
+                                                    id="1 Year Relative Commercial"
+                                                ),
+                                                html.Td(
+                                                    id="1 Year Relative Noncommercial"
+                                                ),
+                                                html.Td(
+                                                    id="1 Year Relative Nonreportable"
+                                                ),
+                                            ]
+                                        ),
+                                    ],
+                                    style={
+                                        "border-collapse": "collapse",
+                                        "width": "100%",
+                                    },
+                                ),
                             ]
-                        ),
-                        dbc.Row(
-                            [
-                                dbc.Col(html.P("Current:")),
-                                dbc.Col(html.P(id="Current Commercial")),
-                                dbc.Col(html.P(id="Current Noncommercial")),
-                                dbc.Col(html.P(id="Current Nonreportable")),
+                        )
+                    )
+                ),
+                dbc.Card(
+                    dbc.CardBody(
+                        html.Div(
+                            children=[
+                                html.H5("Open Interest Absolute Change"),
+                                html.Table(
+                                    children=[
+                                        html.Tr(
+                                            children=[
+                                                html.Th(""),
+                                                html.Th("Commercial"),
+                                                html.Th("Noncommercial"),
+                                                html.Th("Nonreportable"),
+                                            ]
+                                        ),
+                                        html.Tr(
+                                            children=[
+                                                html.Td("Current:"),
+                                                html.Td(
+                                                    id="Current Absolute Commercial"
+                                                ),
+                                                html.Td(
+                                                    id="Current Absolute Noncommercial"
+                                                ),
+                                                html.Td(
+                                                    id="Current Absolute Nonreportable"
+                                                ),
+                                            ]
+                                        ),
+                                        html.Tr(
+                                            children=[
+                                                html.Td("3 Month:"),
+                                                html.Td(
+                                                    id="3 Month Absolute Commercial"
+                                                ),
+                                                html.Td(
+                                                    id="3 Month Absolute Noncommercial"
+                                                ),
+                                                html.Td(
+                                                    id="3 Month Absolute Nonreportable"
+                                                ),
+                                            ]
+                                        ),
+                                        html.Tr(
+                                            children=[
+                                                html.Td("6 Month:"),
+                                                html.Td(
+                                                    id="6 Month Absolute Commercial"
+                                                ),
+                                                html.Td(
+                                                    id="6 Month Absolute Noncommercial"
+                                                ),
+                                                html.Td(
+                                                    id="6 Month Absolute Nonreportable"
+                                                ),
+                                            ]
+                                        ),
+                                        html.Tr(
+                                            children=[
+                                                html.Td("1 Year:"),
+                                                html.Td(
+                                                    id="1 Year Absolute Commercial"
+                                                ),
+                                                html.Td(
+                                                    id="1 Year Absolute Noncommercial"
+                                                ),
+                                                html.Td(
+                                                    id="1 Year Absolute Nonreportable"
+                                                ),
+                                            ]
+                                        ),
+                                    ],
+                                    style={
+                                        "border-collapse": "collapse",
+                                        "width": "100%",
+                                    },
+                                ),
                             ]
-                        ),
-                        dbc.Row(
-                            [
-                                dbc.Col(html.P("3 Month:")),
-                                dbc.Col(html.P(id="3 Month Commercial")),
-                                dbc.Col(html.P(id="3 Month Noncommercial")),
-                                dbc.Col(html.P(id="3 Month Nonreportable")),
-                            ]
-                        ),
-                        dbc.Row(
-                            [
-                                dbc.Col(html.P("6 Month:")),
-                                dbc.Col(html.P(id="6 Month Commercial")),
-                                dbc.Col(html.P(id="6 Month Noncommercial")),
-                                dbc.Col(html.P(id="6 Month Nonreportable")),
-                            ]
-                        ),
-                        dbc.Row(
-                            [
-                                dbc.Col(html.P("1 Year:")),
-                                dbc.Col(html.P(id="1 Year Commercial")),
-                                dbc.Col(html.P(id="1 Year Noncommercial")),
-                                dbc.Col(html.P(id="1 Year Nonreportable")),
-                            ]
-                        ),
-                    ]
-                )
-            ),
-            style=TABLE_CARD_TEXT_STYLE,
-            md=6,
+                        )
+                    )
+                ),
+            ],
         ),
     ],
 )
@@ -240,12 +354,12 @@ content_third_row = dbc.Row(
         dbc.Col(
             children=[
                 dcc.Graph(id="mainGraph"),
-                html.P("Select data type:"),
+                html.Div("Select category:"),
                 dcc.Dropdown(
                     options=columnOptions, value="OpenInterest", id="columnDropdown"
                 ),
-                html.P(""),
-                html.P("Select asset:"),
+                html.Br(),
+                html.Div("Select contract:"),
                 dcc.Dropdown(options=tableOptions, value="EUR", id="tableDropdown"),
             ],
             md=12,
@@ -275,6 +389,7 @@ content = html.Div(
 app = Dash(
     external_stylesheets=[
         dbc.themes.BOOTSTRAP,
+        "/main.css",
     ]
 )
 load_figure_template("BOOTSTRAP")
@@ -289,81 +404,178 @@ app.layout = html.Div(
 
 @app.callback(
     Output("pie_chart", "figure"),
-    Output(component_id="Current Commercial", component_property="children"),
-    Output(component_id="Current Noncommercial", component_property="children"),
-    Output(component_id="Current Nonreportable", component_property="children"),
-    Output(component_id="3 Month Commercial", component_property="children"),
-    Output(component_id="3 Month Noncommercial", component_property="children"),
-    Output(component_id="3 Month Nonreportable", component_property="children"),
-    Output(component_id="6 Month Commercial", component_property="children"),
-    Output(component_id="6 Month Noncommercial", component_property="children"),
-    Output(component_id="6 Month Nonreportable", component_property="children"),
-    Output(component_id="1 Year Commercial", component_property="children"),
-    Output(component_id="1 Year Noncommercial", component_property="children"),
-    Output(component_id="1 Year Nonreportable", component_property="children"),
+    Output(component_id="Current Relative Commercial", component_property="children"),
+    Output(
+        component_id="Current Relative Noncommercial", component_property="children"
+    ),
+    Output(
+        component_id="Current Relative Nonreportable", component_property="children"
+    ),
+    Output(component_id="3 Month Relative Commercial", component_property="children"),
+    Output(
+        component_id="3 Month Relative Noncommercial", component_property="children"
+    ),
+    Output(
+        component_id="3 Month Relative Nonreportable", component_property="children"
+    ),
+    Output(component_id="6 Month Relative Commercial", component_property="children"),
+    Output(
+        component_id="6 Month Relative Noncommercial", component_property="children"
+    ),
+    Output(
+        component_id="6 Month Relative Nonreportable", component_property="children"
+    ),
+    Output(component_id="1 Year Relative Commercial", component_property="children"),
+    Output(component_id="1 Year Relative Noncommercial", component_property="children"),
+    Output(component_id="1 Year Relative Nonreportable", component_property="children"),
+    Output(component_id="Current Absolute Commercial", component_property="children"),
+    Output(
+        component_id="Current Absolute Noncommercial", component_property="children"
+    ),
+    Output(
+        component_id="Current Absolute Nonreportable", component_property="children"
+    ),
+    Output(component_id="3 Month Absolute Commercial", component_property="children"),
+    Output(
+        component_id="3 Month Absolute Noncommercial", component_property="children"
+    ),
+    Output(
+        component_id="3 Month Absolute Nonreportable", component_property="children"
+    ),
+    Output(component_id="6 Month Absolute Commercial", component_property="children"),
+    Output(
+        component_id="6 Month Absolute Noncommercial", component_property="children"
+    ),
+    Output(
+        component_id="6 Month Absolute Nonreportable", component_property="children"
+    ),
+    Output(component_id="1 Year Absolute Commercial", component_property="children"),
+    Output(component_id="1 Year Absolute Noncommercial", component_property="children"),
+    Output(component_id="1 Year Absolute Nonreportable", component_property="children"),
     Input("tables", "value"),
     Input("category", "value"),
 )
 def renderPieChart(tables, category):
     df = read_sql(tables, engine)
-    current_commercial = functions.total_open_interest_commercial(df.iloc[0])
-    current_noncommercial = functions.total_open_interest_noncommercial(df.iloc[0])
-    current_nonreportable = functions.total_open_interest_nonreportable(df.iloc[0])
-    cc_3month_change = int(
+    current_relative_commercial = functions.total_open_interest_commercial(df.iloc[0])
+    current_relative_noncommercial = functions.total_open_interest_noncommercial(
+        df.iloc[0]
+    )
+    current_relative_nonreportable = functions.total_open_interest_nonreportable(
+        df.iloc[0]
+    )
+    current_absolute_commercial = current_relative_commercial
+    current_absolute_noncommercial = current_relative_noncommercial
+    current_absolute_nonreportable = current_relative_nonreportable
+
+    cc_3month_relative_change = int(
         functions.percentage_change(
             (functions.total_open_interest_commercial(df.iloc[0])),
             (functions.total_open_interest_commercial(df.iloc[11])),
         )
     )
-    nc_3month_change = int(
+    nc_3month_relative_change = int(
         functions.percentage_change(
             functions.total_open_interest_noncommercial(df.iloc[0]),
             functions.total_open_interest_noncommercial(df.iloc[11]),
         )
     )
-    nr_3month_change = int(
+    nr_3month_relative_change = int(
         functions.percentage_change(
             functions.total_open_interest_nonreportable(df.iloc[0]),
             functions.total_open_interest_nonreportable(df.iloc[11]),
         )
     )
-    cc_6month_change = int(
+    cc_6month_relative_change = int(
         functions.percentage_change(
             (functions.total_open_interest_commercial(df.iloc[0])),
             (functions.total_open_interest_commercial(df.iloc[25])),
         )
     )
-    nc_6month_change = int(
+    nc_6month_relative_change = int(
         functions.percentage_change(
             (functions.total_open_interest_noncommercial(df.iloc[0])),
             (functions.total_open_interest_noncommercial(df.iloc[25])),
         )
     )
-    nr_6month_change = int(
+    nr_6month_relative_change = int(
         functions.percentage_change(
             (functions.total_open_interest_nonreportable(df.iloc[0])),
             (functions.total_open_interest_nonreportable(df.iloc[25])),
         )
     )
-    cc_1year_change = int(
+    cc_1year_relative_change = int(
         functions.percentage_change(
             (functions.total_open_interest_commercial(df.iloc[0])),
             (functions.total_open_interest_commercial(df.iloc[51])),
         )
     )
-    nc_1year_change = int(
+    nc_1year_relative_change = int(
         functions.percentage_change(
             (functions.total_open_interest_noncommercial(df.iloc[0])),
             (functions.total_open_interest_noncommercial(df.iloc[51])),
         )
     )
-    nr_1year_change = int(
+    nr_1year_relative_change = int(
         functions.percentage_change(
             (functions.total_open_interest_nonreportable(df.iloc[0])),
             (functions.total_open_interest_nonreportable(df.iloc[51])),
         )
     )
-
+    cc_3month_absolute_change = int(
+        functions.absolute_change(
+            functions.total_open_interest_commercial(df.iloc[0]),
+            functions.total_open_interest_commercial(df.iloc[11]),
+        )
+    )
+    nc_3month_absolute_change = int(
+        functions.absolute_change(
+            functions.total_open_interest_noncommercial(df.iloc[0]),
+            functions.total_open_interest_noncommercial(df.iloc[11]),
+        )
+    )
+    nr_3month_absolute_change = int(
+        functions.absolute_change(
+            functions.total_open_interest_nonreportable(df.iloc[0]),
+            functions.total_open_interest_nonreportable(df.iloc[11]),
+        )
+    )
+    cc_6month_absolute_change = int(
+        functions.absolute_change(
+            (functions.total_open_interest_commercial(df.iloc[0])),
+            (functions.total_open_interest_commercial(df.iloc[25])),
+        )
+    )
+    nc_6month_absolute_change = int(
+        functions.absolute_change(
+            (functions.total_open_interest_noncommercial(df.iloc[0])),
+            (functions.total_open_interest_noncommercial(df.iloc[25])),
+        )
+    )
+    nr_6month_absolute_change = int(
+        functions.absolute_change(
+            (functions.total_open_interest_nonreportable(df.iloc[0])),
+            (functions.total_open_interest_nonreportable(df.iloc[25])),
+        )
+    )
+    cc_1year_absolute_change = int(
+        functions.absolute_change(
+            (functions.total_open_interest_commercial(df.iloc[0])),
+            (functions.total_open_interest_commercial(df.iloc[51])),
+        )
+    )
+    nc_1year_absolute_change = int(
+        functions.absolute_change(
+            (functions.total_open_interest_noncommercial(df.iloc[0])),
+            (functions.total_open_interest_noncommercial(df.iloc[51])),
+        )
+    )
+    nr_1year_absolute_change = int(
+        functions.absolute_change(
+            (functions.total_open_interest_nonreportable(df.iloc[0])),
+            (functions.total_open_interest_nonreportable(df.iloc[51])),
+        )
+    )
     if category == "All":
         df = pd.DataFrame(
             [
@@ -493,18 +705,30 @@ def renderPieChart(tables, category):
     )
     return (
         pieChart,
-        f"{current_commercial}",
-        f"{current_noncommercial}",
-        f"{current_nonreportable}",
-        f"{cc_3month_change}%",
-        f"{nc_3month_change}%",
-        f"{nr_3month_change}%",
-        f"{cc_6month_change}%",
-        f"{nc_6month_change}%",
-        f"{nr_6month_change}%",
-        f"{cc_1year_change}%",
-        f"{nc_1year_change}%",
-        f"{nr_1year_change}%",
+        f"{current_relative_commercial}",
+        f"{current_relative_noncommercial}",
+        f"{current_relative_nonreportable}",
+        f"{cc_3month_relative_change}%",
+        f"{nc_3month_relative_change}%",
+        f"{nr_3month_relative_change}%",
+        f"{cc_6month_relative_change}%",
+        f"{nc_6month_relative_change}%",
+        f"{nr_6month_relative_change}%",
+        f"{cc_1year_relative_change}%",
+        f"{nc_1year_relative_change}%",
+        f"{nr_1year_relative_change}%",
+        f"{current_absolute_commercial}",
+        f"{current_absolute_noncommercial}",
+        f"{current_absolute_nonreportable}",
+        f"{cc_3month_absolute_change}",
+        f"{nc_3month_absolute_change}",
+        f"{nr_3month_absolute_change}",
+        f"{cc_6month_absolute_change}",
+        f"{nc_6month_absolute_change}",
+        f"{nr_6month_absolute_change}",
+        f"{cc_1year_absolute_change}",
+        f"{nc_1year_absolute_change}",
+        f"{nr_1year_absolute_change}",
     )
 
 

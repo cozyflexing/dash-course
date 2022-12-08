@@ -1,20 +1,13 @@
-.chartgrid{
-    display: grid;
-    gap: 1.5rem;
-    grid-template-columns: repeat(4,1fr);
-
-
-    margin-inline: auto;
-    padding-block: 2rem;
-    width: min(100%, 120rem);    background-color: blueviolet;
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
 }
 
-.griditem{
-    padding: 2rem;
-    border-radius: 0.5rem;
-    background-color: azure;
-}
-
-.grid-col-span-4{
-    grid-column: span 4;
+td,
+th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
 }
