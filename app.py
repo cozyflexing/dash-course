@@ -53,6 +53,15 @@ sidebar = html.Div(
     [
         html.H2("Menu", style=TEXT_STYLE),
         html.Hr(),
+        dbc.Nav(
+            [
+                dbc.NavLink("CFTC", href="/", active="exact"),
+                dbc.NavLink("TFF", href="/page-1", active="exact"),
+                dbc.NavLink("Live Data Feed", href="/page-2", active="exact"),
+            ],
+            vertical=True,
+            pills=True,
+        ),
     ],
     style=SIDEBAR_STYLE,
 )
@@ -376,8 +385,7 @@ content_fourth_row = dbc.Row(
         dbc.Col(dcc.Graph(id="graph_6"), md=6),
     ]
 )
-
-content = html.Div(
+main_content = html.Div(
     [
         html.H2("Sixteen Analytics Dashboard", style=TEXT_STYLE),
         html.Hr(),
@@ -387,6 +395,10 @@ content = html.Div(
         content_fourth_row,
     ],
     style=CONTENT_STYLE,
+)
+
+content = html.Div(
+    id="page-content",
 )
 
 app = Dash(
@@ -399,10 +411,35 @@ load_figure_template("BOOTSTRAP")
 
 app.layout = html.Div(
     [
+        dcc.Location(id="url"),
         sidebar,
         content,
     ]
 )
+
+
+@app.callback(
+    Output("page-content", "children"),
+    [
+        Input("url", "pathname"),
+    ],
+)
+def render_page_content(pathname):
+    if pathname == "/":
+        return main_content
+    elif pathname == "/page-1":
+        return html.P("This is the content of page 1. Yay!")
+    elif pathname == "/page-2":
+        return html.P("Oh cool, this is page 2!")
+    # If the user tries to reach a different page, return a 404 message
+    return html.Div(
+        [
+            html.H1("404: Not found", className="text-danger"),
+            html.Hr(),
+            html.P(f"The pathname {pathname} was not recognised..."),
+        ],
+        className="p-3 bg-light rounded-3",
+    )
 
 
 @app.callback(
